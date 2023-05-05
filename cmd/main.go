@@ -29,10 +29,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	prodgroupRepo := sale.NewProdgroupRepository(sqlDB)
+	prodgroupRepo := repository.NewProdgroupRepository(sqlDB)
 	prodgroupHandler := sale.NewProdgroupHandler(prodgroupRepo)
 
-	paymentMethodRepo := sale.NewPaymentMethodRepository(sqlDB)
+	paymentMethodRepo := repository.NewPaymentMethodRepository(sqlDB)
 	paymentMethodHandler := sale.NewPaymentMethodHandler(paymentMethodRepo)
 
 	promotionRepo := repository.NewDBPromotionRepository(sqlDB)
