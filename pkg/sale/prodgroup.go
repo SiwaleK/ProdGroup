@@ -3,6 +3,7 @@ package sale
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"net/http"
 
 	"github.com/SiwaleK/ProdGroup/model"
@@ -59,7 +60,10 @@ func NewProdgroupRepository(db *sql.DB) ProdgroupRepository {
 func (r *DBProdgroupRepository) GetProdgroup(ctx context.Context) (*[]model.Prodgroup, error) {
 	prodgroups := &[]model.Prodgroup{}
 	rows, err := r.db.QueryContext(ctx, "SELECT * FROM prodgroup")
+	//rows, err := r.db.QueryContext(ctx, "getProdgroup")
+	//rows, err := q.Query(ctx, q.GetProdgroup)
 	if err != nil {
+		fmt.Println("Error querying database:", err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -68,12 +72,14 @@ func (r *DBProdgroupRepository) GetProdgroup(ctx context.Context) (*[]model.Prod
 		var pg model.Prodgroup
 		err := rows.Scan(&pg.Prodgroupid, &pg.Th_name, &pg.En_name)
 		if err != nil {
+			fmt.Println("Error scanning rows:", err)
 			return nil, err
 		}
 		*prodgroups = append(*prodgroups, pg)
 	}
 
 	if err = rows.Err(); err != nil {
+		fmt.Println("Error iterating over rows:", err)
 		return nil, err
 	}
 
@@ -93,7 +99,7 @@ func NewProdgroupHandler(repo ProdgroupRepository) *ProdgroupHandlerImpl {
 func (h *ProdgroupHandlerImpl) GetProdgroup(c *gin.Context) {
 	prodgroups, err := h.repo.GetProdgroup(c.Request.Context())
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get prodgroups"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get prodgroups56"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"prodgroups": prodgroups})

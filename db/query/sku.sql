@@ -13,3 +13,5 @@ SELECT * FROM promotion_applied_items_id;
 SELECT * FROM prodgroup;
 
 
+-- name: GetPaymentMethod :many 
+SELECT * FROM payment_method;

@@ -10,6 +10,33 @@ import (
 	"database/sql"
 )
 
+const getPaymentMethod = `-- name: GetPaymentMethod :many
+SELECT paymentmethodid, paymentname FROM payment_method
+`
+
+func (q *Queries) GetPaymentMethod(ctx context.Context) ([]PaymentMethod, error) {
+	rows, err := q.db.QueryContext(ctx, getPaymentMethod)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []PaymentMethod{}
+	for rows.Next() {
+		var i PaymentMethod
+		if err := rows.Scan(&i.Paymentmethodid, &i.Paymentname); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getProdgroup = `-- name: GetProdgroup :many
 SELECT prodgroupid, th_name, en_name FROM prodgroup
 `

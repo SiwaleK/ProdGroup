@@ -45,13 +45,13 @@ type Paymentconfig struct {
 	printerconfig       []Printerconfig
 }
 
-type Payment_method struct {
+type PaymentMethod struct {
 	PaymentMethodID int    `gorm:"column:paymentmethodid;not null"`
 	PaymentName     string `gorm:"column:paymentname;type:varchar(255)"`
 }
 
-func (Payment_method) TableName() string {
-	return "payment_method" // specify the table name explicitly
+func (PaymentMethod) TableName() string {
+	return "paymentmethod" // specify the table name explicitly
 }
 
 func (Prodgroup) TableName() string {

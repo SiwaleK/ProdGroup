@@ -10,6 +10,7 @@ import (
 )
 
 type Querier interface {
+	GetPaymentMethod(ctx context.Context) ([]PaymentMethod, error)
 	GetProdgroup(ctx context.Context) ([]Prodgroup, error)
 	GetPromotion(ctx context.Context) ([]Promotion, error)
 	GetPromotionAppliedItemID(ctx context.Context) ([]PromotionAppliedItemsID, error)
