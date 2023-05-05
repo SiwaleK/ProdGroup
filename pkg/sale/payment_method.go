@@ -34,8 +34,8 @@ func NewPaymentMethodRepository(db *sql.DB) *DBPaymentMethodRepository {
 	}
 }
 
-func (r *DBPaymentMethodRepository) GetPaymentMethod(ctx context.Context) (*[]model.PaymentMethod, error) {
-	paymentmethod := &[]model.PaymentMethod{}
+func (r *DBPaymentMethodRepository) GetPaymentMethods(ctx context.Context) ([]model.PaymentMethod, error) {
+	paymentmethods := []model.PaymentMethod{}
 	rows, err := r.db.QueryContext(ctx, "SELECT * FROM paymentmethod")
 	if err != nil {
 		fmt.Println("Error querying database:", err)
@@ -50,14 +50,14 @@ func (r *DBPaymentMethodRepository) GetPaymentMethod(ctx context.Context) (*[]mo
 			fmt.Println("Error scanning rows:", err)
 			return nil, err
 		}
-		*paymentmethod = append(*paymentmethod, pm)
+		paymentmethods = append(paymentmethods, pm)
 	}
 
 	if err = rows.Err(); err != nil {
 		fmt.Println("Error iterating over rows:", err)
 		return nil, err
 	}
-	return paymentmethod, nil
+	return paymentmethods, nil
 }
 
 type PaymentMethodHandler struct {
@@ -73,7 +73,7 @@ func NewPaymentMethodHandler(repo PaymentMethodRepository) *PaymentMethodHandler
 func (h *PaymentMethodHandler) GetPaymentMethod(c *gin.Context) {
 	paymentmethod, err := h.repo.GetPaymentMethods(c.Request.Context())
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get prodgroups56"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get payment method"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"paymentmethod": paymentmethod})
