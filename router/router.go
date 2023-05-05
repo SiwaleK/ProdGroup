@@ -1,43 +1,29 @@
 package router
 
 import (
+	"database/sql"
+
 	"github.com/SiwaleK/ProdGroup/pkg/sale"
+	"github.com/SiwaleK/ProdGroup/repository"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
+func RegisterRoute(db *sql.DB) *gin.Engine {
+	// Initialize repositories
+	prodgroupRepo := repository.NewProdgroupRepository(db)
+	paymentMethodRepo := repository.NewPaymentMethodRepository(db)
+	promotionRepo := repository.NewDBPromotionRepository(db)
 
-//func RegisterRoutes(router *gin.RouterGroup) {
+	// Initialize handlers
+	prodgroupHandler := sale.NewProdgroupHandler(prodgroupRepo)
+	paymentMethodHandler := sale.NewPaymentMethodHandler(paymentMethodRepo)
+	promotionHandler := sale.NewPromotionHandler(promotionRepo)
 
-//saleAPI.GET("/ProductCat", sale.GetProdGroup)
-//saleAPI.GET("/ProductCat/:id", sale.GetProdGroupByID)
-//saleAPI.GET("/PaymentMethod", sale.GetPaymentMethod)
-//saleAPI.GET("/Promotion/:id", sale.GetPromotionByID)
-
-// Create a new instance of PromotionHandler and pass it a PromotionRepository
-// 	db, err := sql.Open("driverName", "dataSourceName")
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	defer db.Close()
-
-// 	saleAPI := router.Group("/sale/api/v1")
-// 	repo := NewDBPromotionRepository(db)
-// 	handler := NewPromotionHandler(repo)
-
-// 	// Register the GetPromotionByid function with the router
-// 	saleAPI.GET("/promotion/:id", handler.GetPromotionByID)
-
-// }
-
-func RegisterRoutes(handler *sale.PromotionHandler) *gin.Engine {
+	// Initialize router
 	r := gin.Default()
-
-	promotions := r.Group("/promotions")
-	{
-		promotions.GET("/:id", handler.GetPromotionByID)
-	}
+	r.GET("/sale/api/v1/ProductGroup", prodgroupHandler.GetProdgroup)
+	r.GET("/sale/api/v1/PaymentMethod", paymentMethodHandler.GetPaymentMethod)
+	r.GET("/sale/api/v1/Promotions/:id", promotionHandler.GetPromotionByID)
 
 	return r
 }
