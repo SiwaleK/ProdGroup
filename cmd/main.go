@@ -25,13 +25,6 @@ func main() {
 		log.Fatalf("Error loading .env file: %s", err.Error())
 	}
 
-	// Get DB source from environment variables
-	// dbHost := os.Getenv("DB_HOST")
-	// dbPort := os.Getenv("DB_PORT")
-	// dbUser := os.Getenv("DB_USER")
-	// dbPassword := os.Getenv("DB_PASSWORD")
-	// dbName := os.Getenv("DB_NAME")
-
 	// dbSource := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbHost, dbPort, dbUser, dbPassword, dbName)
 	dbDriver := os.Getenv("DB_DRIVER")
 	dbSource := os.Getenv("DB_SOURCE")
@@ -45,10 +38,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error connecting to database: %v", err)
 	}
-	// sqlDB, err := DB.DB()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
 
 	queries := db.New(dbConn)
 

@@ -24,7 +24,7 @@ func Connect(cfg Config) (Database, error) {
 	db := Database{}
 	var err error
 
-	DB, err = gorm.Open(postgres.Open("postgresql://root:secret@localhost:5435/mos_sku1?sslmode=disable"), &gorm.Config{})
+	DB, err = gorm.Open(postgres.Open("postgresql://root:secret@localhost:5432/mos_sku0?sslmode=disable"), &gorm.Config{})
 	//DB, err = gorm.Open(postgres.Open(os.Getenv("DB_CONNECTION_STRING")), &gorm.Config{})
 
 	if err != nil {

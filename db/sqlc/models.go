@@ -10,9 +10,49 @@ import (
 	"time"
 )
 
+type Branch struct {
+	BranchID          sql.NullString `json:"branch_id"`
+	MerchantID        sql.NullString `json:"merchant_id"`
+	BranchNo          sql.NullString `json:"branch_no"`
+	BranchName        sql.NullString `json:"branch_name"`
+	BranchAddress     sql.NullString `json:"branch_address"`
+	BranchEmail       sql.NullString `json:"branch_email"`
+	AccountName       sql.NullString `json:"account_name"`
+	AccountCode       sql.NullString `json:"account_code"`
+	IsActive          interface{}    `json:"is_active"`
+	BranchAddress2    sql.NullString `json:"branch_address2"`
+	BranchSubdistrict sql.NullString `json:"branch_subdistrict"`
+	BranchDistrict    sql.NullString `json:"branch_district"`
+	BranchProvince    sql.NullString `json:"branch_province"`
+	BranchZipcode     sql.NullString `json:"branch_zipcode"`
+	IsInventory       interface{}    `json:"is_inventory"`
+	IsAlertInventory  interface{}    `json:"is_alert_inventory"`
+}
+
 type PaymentMethod struct {
 	Paymentmethodid int32          `json:"paymentmethodid"`
 	Paymentname     sql.NullString `json:"paymentname"`
+}
+
+type Posclient struct {
+	PosClientID       sql.NullString `json:"pos_client_id"`
+	BranchID          sql.NullString `json:"branch_id"`
+	MerchantID        sql.NullString `json:"merchant_id"`
+	RdNumber          sql.NullString `json:"rd_number"`
+	IsDrawer          interface{}    `json:"is_drawer"`
+	IsBarcode         interface{}    `json:"is_barcode"`
+	IsCash            interface{}    `json:"is_cash"`
+	IsQrcode          interface{}    `json:"is_qrcode"`
+	IsPaotang         interface{}    `json:"is_paotang"`
+	IsTongfah         interface{}    `json:"is_tongfah"`
+	IsCoupon          interface{}    `json:"is_coupon"`
+	SessionType       interface{}    `json:"session_type"`
+	BarcodeReaderType interface{}    `json:"barcode_reader_type"`
+	PrinterType       interface{}    `json:"printer_type"`
+	IsActive          interface{}    `json:"is_active"`
+	PosRunning        sql.NullString `json:"pos_running"`
+	FrPosRunning      sql.NullString `json:"fr_pos_running"`
+	PaymentMode       interface{}    `json:"payment_mode"`
 }
 
 type Prodgroup struct {

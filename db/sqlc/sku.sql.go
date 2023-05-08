@@ -10,6 +10,62 @@ import (
 	"database/sql"
 )
 
+const getPaymentConfig = `-- name: GetPaymentConfig :many
+SELECT
+    pc.is_cash,
+    pc.is_qrcode,
+    pc.is_paotang,
+    pc.is_tongfah,
+    pc.is_coupon,
+    br.account_name,
+    br.account_code
+
+FROM
+    posclient pc,
+    branch br
+`
+
+type GetPaymentConfigRow struct {
+	IsCash      interface{}    `json:"is_cash"`
+	IsQrcode    interface{}    `json:"is_qrcode"`
+	IsPaotang   interface{}    `json:"is_paotang"`
+	IsTongfah   interface{}    `json:"is_tongfah"`
+	IsCoupon    interface{}    `json:"is_coupon"`
+	AccountName sql.NullString `json:"account_name"`
+	AccountCode sql.NullString `json:"account_code"`
+}
+
+func (q *Queries) GetPaymentConfig(ctx context.Context) ([]GetPaymentConfigRow, error) {
+	rows, err := q.db.QueryContext(ctx, getPaymentConfig)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetPaymentConfigRow{}
+	for rows.Next() {
+		var i GetPaymentConfigRow
+		if err := rows.Scan(
+			&i.IsCash,
+			&i.IsQrcode,
+			&i.IsPaotang,
+			&i.IsTongfah,
+			&i.IsCoupon,
+			&i.AccountName,
+			&i.AccountCode,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getPaymentMethod = `-- name: GetPaymentMethod :many
 SELECT paymentmethodid, paymentname FROM payment_method
 `
@@ -65,7 +121,7 @@ func (q *Queries) GetProdgroup(ctx context.Context) ([]Prodgroup, error) {
 }
 
 const getPromotion = `-- name: GetPromotion :many
-SELECT promotionid, promotiontype, startdate, enddate, description, conditions FROM Promotion
+SELECT promotionid, promotiontype, startdate, enddate, description, conditions FROM promotion
 `
 
 func (q *Queries) GetPromotion(ctx context.Context) ([]Promotion, error) {
@@ -126,7 +182,7 @@ func (q *Queries) GetPromotionAppliedItemID(ctx context.Context) ([]PromotionApp
 }
 
 const getPromotionByID = `-- name: GetPromotionByID :one
-SELECT promotionid, promotiontype, startdate, enddate, description, conditions FROM Promotion 
+SELECT promotionid, promotiontype, startdate, enddate, description, conditions FROM promotion 
 WHERE Promotionid =$1
 `
 
