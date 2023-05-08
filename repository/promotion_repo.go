@@ -30,3 +30,37 @@ func (r *DBPromotionRepository) GetPromotionByID(ctx context.Context, promotioni
 	}
 	return promotion, nil
 }
+
+// type Queries struct {
+// 	db *sql.DB
+// }
+
+// func New(db *sql.DB) *Queries {
+// 	return &Queries{
+// 		db: db,
+// 	}
+// }
+
+// type PromotionRepositorySQL interface {
+// 	GetPromotionByID(ctx context.Context, promotionid string) (*db.Promotion, error)
+// }
+
+// func NewPromotionRepositorySQL(db *sql.DB) PromotionRepositorySQL {
+// 	return &DBPromotionRepositorySQL{
+// 		db:      db,
+// 		queries: New(db), // Instantiate the Queries struct
+// 	}
+// }
+
+// type DBPromotionRepositorySQL struct {
+// 	db      *sql.DB
+// 	queries *db.Queries
+// }
+
+// func (r *DBPromotionRepositorySQL) GetPromotionByID(ctx context.Context, promotionid string) (*db.Promotion, error) {
+// 	promotion, err := r.queries.GetPromotionByID(ctx, promotionid)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return &promotion, nil
+// }

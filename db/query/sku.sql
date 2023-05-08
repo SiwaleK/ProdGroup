@@ -1,9 +1,9 @@
 -- name: GetPromotion :many
-SELECT * FROM Promotion;
+SELECT * FROM promotion;
 
 
 -- name: GetPromotionByID :one
-SELECT * FROM Promotion 
+SELECT * FROM promotion 
 WHERE Promotionid =$1 ;
 
 -- name: GetPromotionAppliedItemID :many
@@ -14,4 +14,4 @@ SELECT * FROM prodgroup;
 
 
 -- name: GetPaymentMethod :many 
-SELECT * FROM payment_method;
+SELECT * FROM paymentmethod;

@@ -2,13 +2,13 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"os"
 
+	db "github.com/SiwaleK/ProdGroup/db/sqlc"
 	"github.com/SiwaleK/ProdGroup/router"
 	"github.com/joho/godotenv"
-	"gorm.io/driver/postgres"
+	_ "github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
@@ -26,28 +26,33 @@ func main() {
 	}
 
 	// Get DB source from environment variables
-	dbHost := os.Getenv("DB_HOST")
-	dbPort := os.Getenv("DB_PORT")
-	dbUser := os.Getenv("DB_USER")
-	dbPassword := os.Getenv("DB_PASSWORD")
-	dbName := os.Getenv("DB_NAME")
+	// dbHost := os.Getenv("DB_HOST")
+	// dbPort := os.Getenv("DB_PORT")
+	// dbUser := os.Getenv("DB_USER")
+	// dbPassword := os.Getenv("DB_PASSWORD")
+	// dbName := os.Getenv("DB_NAME")
 
-	dbSource := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbHost, dbPort, dbUser, dbPassword, dbName)
-
+	// dbSource := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbHost, dbPort, dbUser, dbPassword, dbName)
+	dbDriver := os.Getenv("DB_DRIVER")
+	dbSource := os.Getenv("DB_SOURCE")
 	// Connect to database
-	DB, err := gorm.Open(postgres.Open(dbSource), &gorm.Config{
-		Logger: nil,
-	})
+	dbConn, err := sql.Open(dbDriver, dbSource)
+	if err != nil {
+		log.Fatalf("Failed to connect to the database: %v", err)
+	}
+	defer dbConn.Close()
 
 	if err != nil {
 		log.Fatalf("Error connecting to database: %v", err)
 	}
-	sqlDB, err := DB.DB()
-	if err != nil {
-		log.Fatal(err)
-	}
+	// sqlDB, err := DB.DB()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	routers := router.RegisterRoute(sqlDB)
+	queries := db.New(dbConn)
+
+	routers := router.RegisterRoute(queries)
 	if err := routers.Run(":8080"); err != nil {
 		log.Fatal(err)
 	}
