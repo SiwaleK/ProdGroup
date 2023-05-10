@@ -67,11 +67,11 @@ type Promotion struct {
 	Startdate     time.Time       `json:"startdate"`
 	Enddate       time.Time       `json:"enddate"`
 	Description   sql.NullString  `json:"description"`
-	Conditions    json.RawMessage `json:"conditions"`
+	Condition     json.RawMessage `json:"condition"`
 }
 
 type PromotionAppliedItemsID struct {
-	Promotiondetailid sql.NullString `json:"promotiondetailid"`
+	PromotiondetailID sql.NullString `json:"promotiondetail_id"`
 	Promotionid       sql.NullString `json:"promotionid"`
 	Skuid             sql.NullString `json:"skuid"`
 }

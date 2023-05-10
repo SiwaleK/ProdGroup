@@ -5,18 +5,19 @@ CREATE TABLE prodgroup (
 );
 
 CREATE TABLE promotion (
-  PromotionID VARCHAR(36),
+  Promotionid VARCHAR(36),
   PromotionType INT NOT NULL,
-  StartDate timestamptz NOT NULL,
-  EndDate timestamptz NOT NULL,
+  Startdate timestamptz NOT NULL,
+  Enddate timestamptz NOT NULL,
   Description VARCHAR(1024),
-  Conditions JSON NOT NULL
+  Condition JSON NOT NULL
+
 );
 
 CREATE TABLE promotion_applied_items_id (
-  PromotionDetailID VARCHAR(36),
-  PromotionID VARCHAR(36),
-  SKUID VARCHAR(36)
+  Promotiondetail_id VARCHAR(36),
+  Promotionid VARCHAR(36),
+  skuid VARCHAR(36)
 );
 
 CREATE TABLE payment_method (

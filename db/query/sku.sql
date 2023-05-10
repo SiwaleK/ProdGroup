@@ -9,8 +9,28 @@ WHERE Promotionid =$1 ;
 -- name: GetPromotionAppliedItemID :many
 SELECT * FROM promotion_applied_items_id; 
 
+
+-- name: PostPromotion :exec
+WITH promotion AS (
+  INSERT INTO promotion (Promotionid, PromotionType, Startdate, Enddate, Description, Condition)
+  VALUES ($1, $2, $3, $4, $5, $6)
+  RETURNING *
+),
+promotion_applied_items_id AS (
+  INSERT INTO promotion_applied_items_id (Promotiondetail_id, Promotionid, skuid)
+  VALUES ($7, (SELECT Promotionid FROM promotion), $8)
+  RETURNING *
+)
+SELECT promotion.*, promotion_applied_items_id.*
+FROM promotion, promotion_applied_items_id;
+
+
 -- name: GetProdgroup :many
 SELECT * FROM prodgroup;
+
+-- name: GetProdgroupByID :many 
+SELECT * FROM prodgroup
+WHERE prodgroupid =$1;
 
 
 -- name: GetPaymentMethod :many 
@@ -23,6 +43,7 @@ SELECT
     pc.is_paotang,
     pc.is_tongfah,
     pc.is_coupon,
+    pc.printer_type,
     br.account_name,
     br.account_code
 
@@ -32,27 +53,24 @@ FROM
    
 ;
 
---name: UpdateBranch :exec
-UPDATE 
-     branch
-SET 
-   
-    merchant_id = $2,
-    branch_no = $3, 
-    branch_name = $4, 
-    branch_address = $5, 
-    branch_email = $6, 
-    account_name = $7, 
-    account_code = $8, 
-    is_active = $9, 
-    branch_address2 =$10, 
-    branch_subdistrict = $11, 
-    branch_district = $12, 
-    branch_province = $13, 
-    branch_zipcode = $14,
-    is_inventory = $15, 
-    is_alert_inventory = $16
+-- Add unique constraint to posclient table
+ALTER TABLE posclient
+ADD CONSTRAINT uq_posclient_unique_columns UNIQUE (is_cash, is_qrcode, is_paotang, is_tongfah, is_coupon, printer_type);
 
-WHERE
-    branch_id = $1;
-    
+
+-- name: UpsertPaymentConfig :exec
+WITH upsert_data AS (
+    INSERT INTO posclient (is_cash, is_qrcode, is_paotang, is_tongfah, is_coupon, printer_type)
+    VALUES ($1, $2, $3, $4, $5, $6)
+    ON CONFLICT (pos_client_id)
+    DO UPDATE SET
+        is_cash = EXCLUDED.is_cash,
+        is_qrcode = EXCLUDED.is_qrcode,
+        is_paotang = EXCLUDED.is_paotang,
+        is_tongfah = EXCLUDED.is_tongfah,
+        is_coupon = EXCLUDED.is_coupon,
+        printer_type = EXCLUDED.printer_type
+    RETURNING pos_client_id
+)
+SELECT *
+FROM upsert_data;

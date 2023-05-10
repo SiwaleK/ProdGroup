@@ -8,6 +8,7 @@ import (
 
 type ProdgroupRepository interface {
 	GetProdgroup(ctx context.Context) ([]db.Prodgroup, error)
+	GetProdgroupByID(ctx context.Context, prodgroupid int32) ([]db.Prodgroup, error)
 }
 
 type DBProdgroupRepository struct {
@@ -22,6 +23,23 @@ func NewProdgroupRepository(db *db.Queries) ProdgroupRepository {
 
 func (r *DBProdgroupRepository) GetProdgroup(ctx context.Context) ([]db.Prodgroup, error) {
 	dbProdgroups, err := r.db.GetProdgroup(ctx)
+	if err != nil {
+		return nil, err
+	}
+	prodgroups := make([]db.Prodgroup, len(dbProdgroups))
+	for i, dbProdgroups := range dbProdgroups {
+		prodgroups[i] = db.Prodgroup{
+			Prodgroupid: dbProdgroups.Prodgroupid,
+			ThName:      dbProdgroups.ThName,
+			EnName:      dbProdgroups.EnName,
+		}
+	}
+
+	return prodgroups, nil
+}
+
+func (r *DBProdgroupRepository) GetProdgroupByID(ctx context.Context, Prodgroupid int32) ([]db.Prodgroup, error) {
+	dbProdgroups, err := r.db.GetProdgroupByID(ctx, Prodgroupid)
 	if err != nil {
 		return nil, err
 	}

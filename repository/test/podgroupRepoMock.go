@@ -2,8 +2,6 @@ package repository
 
 import (
 	"context"
-	"database/sql"
-	"fmt"
 
 	db "github.com/SiwaleK/ProdGroup/db/sqlc"
 	"github.com/stretchr/testify/mock"
@@ -21,26 +19,4 @@ func (r *ProdgroupRepositoryMock) GetProdgroup(ctx context.Context) (*db.Prodgro
 	}
 
 	return nil, args.Error(1)
-}
-
-func ProdgroupMock() {
-	repo := &ProdgroupRepositoryMock{}
-
-	// Set up the mock response
-	mockProdgroup := &db.Prodgroup{
-		Prodgroupid: 1,
-		ThName:      sql.NullString{String: "Product Group 1", Valid: true},
-		EnName:      sql.NullString{String: "Group 1", Valid: true},
-	}
-	repo.On("GetProdgroup", mock.Anything).Return(mockProdgroup, nil)
-
-	// Call the GetProdgroup method
-	ctx := context.Background()
-	prodgroup, err := repo.GetProdgroup(ctx)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-
-	fmt.Println("Prodgroup:", prodgroup.Prodgroupid, prodgroup.ThName.String, prodgroup.EnName.String)
 }

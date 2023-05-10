@@ -8,6 +8,8 @@ package db
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
+	"time"
 )
 
 const getPaymentConfig = `-- name: GetPaymentConfig :many
@@ -17,6 +19,7 @@ SELECT
     pc.is_paotang,
     pc.is_tongfah,
     pc.is_coupon,
+    pc.printer_type,
     br.account_name,
     br.account_code
 
@@ -31,6 +34,7 @@ type GetPaymentConfigRow struct {
 	IsPaotang   interface{}    `json:"is_paotang"`
 	IsTongfah   interface{}    `json:"is_tongfah"`
 	IsCoupon    interface{}    `json:"is_coupon"`
+	PrinterType interface{}    `json:"printer_type"`
 	AccountName sql.NullString `json:"account_name"`
 	AccountCode sql.NullString `json:"account_code"`
 }
@@ -50,6 +54,7 @@ func (q *Queries) GetPaymentConfig(ctx context.Context) ([]GetPaymentConfigRow, 
 			&i.IsPaotang,
 			&i.IsTongfah,
 			&i.IsCoupon,
+			&i.PrinterType,
 			&i.AccountName,
 			&i.AccountCode,
 		); err != nil {
@@ -120,8 +125,36 @@ func (q *Queries) GetProdgroup(ctx context.Context) ([]Prodgroup, error) {
 	return items, nil
 }
 
+const getProdgroupByID = `-- name: GetProdgroupByID :many
+SELECT prodgroupid, th_name, en_name FROM prodgroup
+WHERE prodgroupid =$1
+`
+
+func (q *Queries) GetProdgroupByID(ctx context.Context, prodgroupid int32) ([]Prodgroup, error) {
+	rows, err := q.db.QueryContext(ctx, getProdgroupByID, prodgroupid)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Prodgroup{}
+	for rows.Next() {
+		var i Prodgroup
+		if err := rows.Scan(&i.Prodgroupid, &i.ThName, &i.EnName); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getPromotion = `-- name: GetPromotion :many
-SELECT promotionid, promotiontype, startdate, enddate, description, conditions FROM promotion
+SELECT promotionid, promotiontype, startdate, enddate, description, condition FROM promotion
 `
 
 func (q *Queries) GetPromotion(ctx context.Context) ([]Promotion, error) {
@@ -139,7 +172,7 @@ func (q *Queries) GetPromotion(ctx context.Context) ([]Promotion, error) {
 			&i.Startdate,
 			&i.Enddate,
 			&i.Description,
-			&i.Conditions,
+			&i.Condition,
 		); err != nil {
 			return nil, err
 		}
@@ -155,7 +188,7 @@ func (q *Queries) GetPromotion(ctx context.Context) ([]Promotion, error) {
 }
 
 const getPromotionAppliedItemID = `-- name: GetPromotionAppliedItemID :many
-SELECT promotiondetailid, promotionid, skuid FROM promotion_applied_items_id
+SELECT promotiondetail_id, promotionid, skuid FROM promotion_applied_items_id
 `
 
 func (q *Queries) GetPromotionAppliedItemID(ctx context.Context) ([]PromotionAppliedItemsID, error) {
@@ -167,7 +200,7 @@ func (q *Queries) GetPromotionAppliedItemID(ctx context.Context) ([]PromotionApp
 	items := []PromotionAppliedItemsID{}
 	for rows.Next() {
 		var i PromotionAppliedItemsID
-		if err := rows.Scan(&i.Promotiondetailid, &i.Promotionid, &i.Skuid); err != nil {
+		if err := rows.Scan(&i.PromotiondetailID, &i.Promotionid, &i.Skuid); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -182,7 +215,7 @@ func (q *Queries) GetPromotionAppliedItemID(ctx context.Context) ([]PromotionApp
 }
 
 const getPromotionByID = `-- name: GetPromotionByID :one
-SELECT promotionid, promotiontype, startdate, enddate, description, conditions FROM promotion 
+SELECT promotionid, promotiontype, startdate, enddate, description, condition FROM promotion 
 WHERE Promotionid =$1
 `
 
@@ -195,7 +228,98 @@ func (q *Queries) GetPromotionByID(ctx context.Context, promotionid sql.NullStri
 		&i.Startdate,
 		&i.Enddate,
 		&i.Description,
-		&i.Conditions,
+		&i.Condition,
 	)
 	return i, err
+}
+
+const postPromotion = `-- name: PostPromotion :exec
+WITH promotion AS (
+  INSERT INTO promotion (Promotionid, PromotionType, Startdate, Enddate, Description, Condition)
+  VALUES ($1, $2, $3, $4, $5, $6)
+  RETURNING promotionid, promotiontype, startdate, enddate, description, condition
+),
+promotion_applied_items_id AS (
+  INSERT INTO promotion_applied_items_id (Promotiondetail_id, Promotionid, skuid)
+  VALUES ($7, (SELECT Promotionid FROM promotion), $8)
+  RETURNING promotiondetail_id, promotionid, skuid
+)
+SELECT promotion.promotionid, promotion.promotiontype, promotion.startdate, promotion.enddate, promotion.description, promotion.condition, promotion_applied_items_id.promotiondetail_id, promotion_applied_items_id.promotionid, promotion_applied_items_id.skuid
+FROM promotion, promotion_applied_items_id
+`
+
+type PostPromotionParams struct {
+	Promotionid       sql.NullString  `json:"promotionid"`
+	Promotiontype     int32           `json:"promotiontype"`
+	Startdate         time.Time       `json:"startdate"`
+	Enddate           time.Time       `json:"enddate"`
+	Description       sql.NullString  `json:"description"`
+	Condition         json.RawMessage `json:"condition"`
+	PromotiondetailID sql.NullString  `json:"promotiondetail_id"`
+	Skuid             sql.NullString  `json:"skuid"`
+}
+
+type PostPromotionRow struct {
+	Promotionid       sql.NullString  `json:"promotionid"`
+	Promotiontype     int32           `json:"promotiontype"`
+	Startdate         time.Time       `json:"startdate"`
+	Enddate           time.Time       `json:"enddate"`
+	Description       sql.NullString  `json:"description"`
+	Condition         json.RawMessage `json:"condition"`
+	PromotiondetailID sql.NullString  `json:"promotiondetail_id"`
+	Promotionid_2     sql.NullString  `json:"promotionid_2"`
+	Skuid             sql.NullString  `json:"skuid"`
+}
+
+func (q *Queries) PostPromotion(ctx context.Context, arg PostPromotionParams) error {
+	_, err := q.db.ExecContext(ctx, postPromotion,
+		arg.Promotionid,
+		arg.Promotiontype,
+		arg.Startdate,
+		arg.Enddate,
+		arg.Description,
+		arg.Condition,
+		arg.PromotiondetailID,
+		arg.Skuid,
+	)
+	return err
+}
+
+const upsertPaymentConfig = `-- name: UpsertPaymentConfig :exec
+WITH upsert_data AS (
+    INSERT INTO posclient (is_cash, is_qrcode, is_paotang, is_tongfah, is_coupon, printer_type)
+    VALUES ($1, $2, $3, $4, $5, $6)
+    ON CONFLICT (pos_client_id)
+    DO UPDATE SET
+        is_cash = EXCLUDED.is_cash,
+        is_qrcode = EXCLUDED.is_qrcode,
+        is_paotang = EXCLUDED.is_paotang,
+        is_tongfah = EXCLUDED.is_tongfah,
+        is_coupon = EXCLUDED.is_coupon,
+        printer_type = EXCLUDED.printer_type
+    RETURNING pos_client_id
+)
+SELECT pos_client_id
+FROM upsert_data
+`
+
+type UpsertPaymentConfigParams struct {
+	IsCash      interface{} `json:"is_cash"`
+	IsQrcode    interface{} `json:"is_qrcode"`
+	IsPaotang   interface{} `json:"is_paotang"`
+	IsTongfah   interface{} `json:"is_tongfah"`
+	IsCoupon    interface{} `json:"is_coupon"`
+	PrinterType interface{} `json:"printer_type"`
+}
+
+func (q *Queries) UpsertPaymentConfig(ctx context.Context, arg UpsertPaymentConfigParams) error {
+	_, err := q.db.ExecContext(ctx, upsertPaymentConfig,
+		arg.IsCash,
+		arg.IsQrcode,
+		arg.IsPaotang,
+		arg.IsTongfah,
+		arg.IsCoupon,
+		arg.PrinterType,
+	)
+	return err
 }

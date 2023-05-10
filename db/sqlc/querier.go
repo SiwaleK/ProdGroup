@@ -13,9 +13,12 @@ type Querier interface {
 	GetPaymentConfig(ctx context.Context) ([]GetPaymentConfigRow, error)
 	GetPaymentMethod(ctx context.Context) ([]PaymentMethod, error)
 	GetProdgroup(ctx context.Context) ([]Prodgroup, error)
+	GetProdgroupByID(ctx context.Context, prodgroupid int32) ([]Prodgroup, error)
 	GetPromotion(ctx context.Context) ([]Promotion, error)
 	GetPromotionAppliedItemID(ctx context.Context) ([]PromotionAppliedItemsID, error)
 	GetPromotionByID(ctx context.Context, promotionid sql.NullString) (Promotion, error)
+	PostPromotion(ctx context.Context, arg PostPromotionParams) error
+	UpsertPaymentConfig(ctx context.Context, arg UpsertPaymentConfigParams) error
 }
 
 var _ Querier = (*Queries)(nil)
