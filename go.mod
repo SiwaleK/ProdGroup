@@ -8,7 +8,6 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/rs/zerolog v1.29.1
 	github.com/stretchr/testify v1.8.2
-	github.com/tabbed/pqtype v0.1.1
 	gorm.io/driver/postgres v1.5.0
 	gorm.io/gorm v1.25.0
 )

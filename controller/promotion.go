@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"database/sql"
 	"encoding/json"
 	"net/http"
 	"time"
@@ -36,36 +35,36 @@ type AppliedItems struct {
 }
 
 type PostPromotionDiscountRequest struct {
-	Promotionid    sql.NullString `json:"id"`
-	Promotiontitle sql.NullString `json:"title"`
-	Promotiontype  int32          `json:"promotiontype"`
-	Startdate      time.Time      `json:"startDate"`
-	Enddate        time.Time      `json:"endDate"`
-	Description    sql.NullString `json:"text"`
+	Promotionid    *string   `json:"id"`
+	Promotiontitle *string   `json:"title"`
+	Promotiontype  int32     `json:"promotiontype"`
+	Startdate      time.Time `json:"startDate"`
+	Enddate        time.Time `json:"endDate"`
+	Description    *string   `json:"text"`
 	Condition      struct {
 		Discount int
 	}
 	AppliedItemsID []struct {
-		PromotiondetailID sql.NullString `json:"promotiondetail_id"`
-		Skuid             sql.NullString `json:"skuid"`
+		PromotiondetailID *string `json:"promotiondetail_id"`
+		Skuid             *string `json:"skuid"`
 	} `json:"appliedItemsId"`
 }
 
 type PostPromotionAFREEBRequest struct {
-	Promotionid    sql.NullString `json:"id"`
-	Promotiontitle sql.NullString `json:"title"`
-	Promotiontype  int32          `json:"promotiontype"`
-	Startdate      time.Time      `json:"startdate"`
-	Enddate        time.Time      `json:"enddate"`
-	Description    sql.NullString `json:"text"`
+	Promotionid    *string   `json:"id"`
+	Promotiontitle *string   `json:"title"`
+	Promotiontype  int32     `json:"promotiontype"`
+	Startdate      time.Time `json:"startdate"`
+	Enddate        time.Time `json:"enddate"`
+	Description    *string   `json:"text"`
 	Condition      struct {
 		MinimumAmountToEnable int
 		FreeAmount            int
 		PremiumItemsId        []string
 	} `json:"condition"`
 	AppliedItemsID []struct {
-		PromotiondetailID sql.NullString `json:"promotiondetail_id"`
-		Skuid             sql.NullString `json:"skuid"`
+		PromotiondetailID *string `json:"promotiondetail_id"`
+		Skuid             *string `json:"skuid"`
 	} `json:"appliedItemsId"`
 }
 
@@ -79,12 +78,12 @@ type SpecialPriceAtXItemConditionDetail struct {
 }
 
 type PostPromotionStepPurchaseRequest struct {
-	Promotionid    sql.NullString `json:"id"`
-	Promotiontitle sql.NullString `json:"title"`
-	Promotiontype  int32          `json:"promotiontype"`
-	Startdate      time.Time      `json:"startdate"`
-	Enddate        time.Time      `json:"enddate"`
-	Description    sql.NullString `json:"text"`
+	Promotionid    *string   `json:"id"`
+	Promotiontitle *string   `json:"title"`
+	Promotiontype  int32     `json:"promotiontype"`
+	Startdate      time.Time `json:"startdate"`
+	Enddate        time.Time `json:"enddate"`
+	Description    *string   `json:"text"`
 	Condition      struct {
 		SpecialPriceAtXItemConditionDetail []struct {
 			MinimumItemToEnable int `json:"minimumItemToEnable"`
@@ -92,8 +91,8 @@ type PostPromotionStepPurchaseRequest struct {
 		} `json:"specialPriceAtXItemConditionDetail"`
 	} `json:"condition"`
 	AppliedItemsID []struct {
-		PromotiondetailID sql.NullString `json:"promotiondetail_id"`
-		Skuid             sql.NullString `json:"skuid"`
+		PromotiondetailID *string `json:"promotiondetail_id"`
+		Skuid             *string `json:"skuid"`
 	} `json:"appliedItemsId"`
 }
 
@@ -116,8 +115,8 @@ func (h PromotionHandler) PostDiscountPromotion(c *gin.Context) {
 	}
 
 	appliedItemsIDs := make([]struct {
-		PromotiondetailID sql.NullString `json:"promotiondetail_id"`
-		Skuid             sql.NullString `json:"skuid"`
+		PromotiondetailID *string `json:"promotiondetail_id"`
+		Skuid             *string `json:"skuid"`
 	}, len(req.AppliedItemsID))
 
 	for i, item := range req.AppliedItemsID {
@@ -186,8 +185,8 @@ func (h PromotionHandler) PostPromotionAFREEB(c *gin.Context) {
 	}
 
 	appliedItemsIDs := make([]struct {
-		PromotiondetailID sql.NullString `json:"promotiondetail_id"`
-		Skuid             sql.NullString `json:"skuid"`
+		PromotiondetailID *string `json:"promotiondetail_id"`
+		Skuid             *string `json:"skuid"`
 	}, len(req.AppliedItemsID))
 
 	for i, item := range req.AppliedItemsID {
@@ -263,8 +262,8 @@ func (h PromotionHandler) PostPromotionStepPurchase(c *gin.Context) {
 
 	rawCondition := json.RawMessage(conditionBytes)
 	appliedItemsIDs := make([]struct {
-		PromotiondetailID sql.NullString `json:"promotiondetail_id"`
-		Skuid             sql.NullString `json:"skuid"`
+		PromotiondetailID *string `json:"promotiondetail_id"`
+		Skuid             *string `json:"skuid"`
 	}, len(req.AppliedItemsID))
 
 	for i, item := range req.AppliedItemsID {

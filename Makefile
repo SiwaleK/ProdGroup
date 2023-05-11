@@ -1,11 +1,5 @@
-# migrateup:
-#     migrate -path ./db/migration -database "postgresql://root:secret@127.0.0.1:5433?sslmode=disable" up
-
-# migratedown:
-#     migrate -path ./db/migration -database "postgresql://root:secret@127.0.0.1:5433?sslmode=disable" down
-
 run:
-    go run cmd/main.go 
+    go run cmd/main.go
 
 sqlc:
     docker run --rm -v "$(pwd):/src" -w /src kjconroy/sqlc:1.17.0 /workspace/sqlc generate
@@ -16,8 +10,17 @@ sqlc:
     sed -i -e 's/"database\/sql"//' db/sqlc/models.go
 
 
-test:
-	cd test
-	go test
+sqlc manual for models.go file :
+    docker run --rm -v "$(pwd):/src" -w /src kjconroy/sqlc:1.17.0 /workspace/sqlc generate
+    (Get-Content -Path "db/sqlc/models.go") -replace "sql.NullString", "*string" | Set-Content -Path "db/sqlc/models.go"
+    (Get-Content -Path "db/sqlc/models.go") -replace "sql.NullInt32", "*int32" | Set-Content -Path "db/sqlc/models.go"
+    (Get-Content -Path "db/sqlc/models.go") -replace "sql.NullInt16", "*int16" | Set-Content -Path "db/sqlc/models.go"
+    (Get-Content -Path "db/sqlc/models.go") -replace "sql.NullTime", "*time.Time" | Set-Content -Path "db/sqlc/models.go"
+    (Get-Content -Path "db/sqlc/models.go") -replace "`"database/sql`"", "" | Set-Content -Path "db/sqlc/models.go"
 
-# .PHONY: migrateup migratedown sqlc run
+docker run --rm -v "$(pwd):/src" -w /src kjconroy/sqlc:1.17.0 /workspace/sqlc generate
+(Get-Content -Raw -Path ./db/sqlc/*.go) -replace 'sql.NullString', '*string' | Set-Content -Path ./db/sqlc/*.go
+(Get-Content -Raw -Path ./db/sqlc/*.go) -replace 'sql.NullInt32', '*int32' | Set-Content -Path ./db/sqlc/*.go
+(Get-Content -Raw -Path ./db/sqlc/*.go) -replace 'sql.NullTime', '*time.Time' | Set-Content -Path ./db/sqlc/*.go
+
+.PHONY: sqlc run

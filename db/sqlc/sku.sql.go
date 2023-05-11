@@ -7,7 +7,7 @@ package db
 
 import (
 	"context"
-	"database/sql"
+	
 	"encoding/json"
 	"time"
 )
@@ -35,8 +35,8 @@ type GetPaymentConfigRow struct {
 	IsTongfah   interface{}    `json:"is_tongfah"`
 	IsCoupon    interface{}    `json:"is_coupon"`
 	PrinterType interface{}    `json:"printer_type"`
-	AccountName sql.NullString `json:"account_name"`
-	AccountCode sql.NullString `json:"account_code"`
+	AccountName *string `json:"account_name"`
+	AccountCode *string `json:"account_code"`
 }
 
 func (q *Queries) GetPaymentConfig(ctx context.Context) ([]GetPaymentConfigRow, error) {
@@ -220,7 +220,7 @@ SELECT promotionid, promotiontitle, promotiontype, startdate, enddate, descripti
 WHERE Promotionid =$1
 `
 
-func (q *Queries) GetPromotionByID(ctx context.Context, promotionid sql.NullString) (Promotion, error) {
+func (q *Queries) GetPromotionByID(ctx context.Context, promotionid *string) (Promotion, error) {
 	row := q.db.QueryRowContext(ctx, getPromotionByID, promotionid)
 	var i Promotion
 	err := row.Scan(
@@ -251,28 +251,28 @@ FROM promotion, promotion_applied_items_id
 `
 
 type PostPromotionParams struct {
-	Promotionid       sql.NullString  `json:"promotionid"`
-	Promotiontitle    sql.NullString  `json:"promotiontitle"`
+	Promotionid       *string  `json:"promotionid"`
+	Promotiontitle    *string  `json:"promotiontitle"`
 	Promotiontype     int32           `json:"promotiontype"`
 	Startdate         time.Time       `json:"startdate"`
 	Enddate           time.Time       `json:"enddate"`
-	Description       sql.NullString  `json:"description"`
+	Description       *string  `json:"description"`
 	Condition         json.RawMessage `json:"condition"`
-	PromotiondetailID sql.NullString  `json:"promotiondetail_id"`
-	Skuid             sql.NullString  `json:"skuid"`
+	PromotiondetailID *string  `json:"promotiondetail_id"`
+	Skuid             *string  `json:"skuid"`
 }
 
 type PostPromotionRow struct {
-	Promotionid       sql.NullString  `json:"promotionid"`
-	Promotiontitle    sql.NullString  `json:"promotiontitle"`
+	Promotionid       *string  `json:"promotionid"`
+	Promotiontitle    *string  `json:"promotiontitle"`
 	Promotiontype     int32           `json:"promotiontype"`
 	Startdate         time.Time       `json:"startdate"`
 	Enddate           time.Time       `json:"enddate"`
-	Description       sql.NullString  `json:"description"`
+	Description       *string  `json:"description"`
 	Condition         json.RawMessage `json:"condition"`
-	PromotiondetailID sql.NullString  `json:"promotiondetail_id"`
-	Promotionid_2     sql.NullString  `json:"promotionid_2"`
-	Skuid             sql.NullString  `json:"skuid"`
+	PromotiondetailID *string  `json:"promotiondetail_id"`
+	Promotionid_2     *string  `json:"promotionid_2"`
+	Skuid             *string  `json:"skuid"`
 }
 
 func (q *Queries) PostPromotion(ctx context.Context, arg PostPromotionParams) error {
@@ -328,3 +328,4 @@ func (q *Queries) UpsertPaymentConfig(ctx context.Context, arg UpsertPaymentConf
 	)
 	return err
 }
+
