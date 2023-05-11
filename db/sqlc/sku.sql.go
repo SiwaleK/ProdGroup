@@ -154,7 +154,7 @@ func (q *Queries) GetProdgroupByID(ctx context.Context, prodgroupid int32) ([]Pr
 }
 
 const getPromotion = `-- name: GetPromotion :many
-SELECT promotionid, promotiontype, startdate, enddate, description, condition FROM promotion
+SELECT promotionid, promotiontitle, promotiontype, startdate, enddate, description, condition FROM promotion
 `
 
 func (q *Queries) GetPromotion(ctx context.Context) ([]Promotion, error) {
@@ -168,6 +168,7 @@ func (q *Queries) GetPromotion(ctx context.Context) ([]Promotion, error) {
 		var i Promotion
 		if err := rows.Scan(
 			&i.Promotionid,
+			&i.Promotiontitle,
 			&i.Promotiontype,
 			&i.Startdate,
 			&i.Enddate,
@@ -215,7 +216,7 @@ func (q *Queries) GetPromotionAppliedItemID(ctx context.Context) ([]PromotionApp
 }
 
 const getPromotionByID = `-- name: GetPromotionByID :one
-SELECT promotionid, promotiontype, startdate, enddate, description, condition FROM promotion 
+SELECT promotionid, promotiontitle, promotiontype, startdate, enddate, description, condition FROM promotion 
 WHERE Promotionid =$1
 `
 
@@ -224,6 +225,7 @@ func (q *Queries) GetPromotionByID(ctx context.Context, promotionid sql.NullStri
 	var i Promotion
 	err := row.Scan(
 		&i.Promotionid,
+		&i.Promotiontitle,
 		&i.Promotiontype,
 		&i.Startdate,
 		&i.Enddate,
@@ -235,21 +237,22 @@ func (q *Queries) GetPromotionByID(ctx context.Context, promotionid sql.NullStri
 
 const postPromotion = `-- name: PostPromotion :exec
 WITH promotion AS (
-  INSERT INTO promotion (Promotionid, PromotionType, Startdate, Enddate, Description, Condition)
-  VALUES ($1, $2, $3, $4, $5, $6)
-  RETURNING promotionid, promotiontype, startdate, enddate, description, condition
+  INSERT INTO promotion (Promotionid,Promotiontitle, PromotionType, Startdate, Enddate, Description, Condition)
+  VALUES ($1, $2, $3, $4, $5, $6,$7)
+  RETURNING promotionid, promotiontitle, promotiontype, startdate, enddate, description, condition
 ),
 promotion_applied_items_id AS (
   INSERT INTO promotion_applied_items_id (Promotiondetail_id, Promotionid, skuid)
-  VALUES ($7, (SELECT Promotionid FROM promotion), $8)
+  VALUES ($8, (SELECT Promotionid FROM promotion), $9)
   RETURNING promotiondetail_id, promotionid, skuid
 )
-SELECT promotion.promotionid, promotion.promotiontype, promotion.startdate, promotion.enddate, promotion.description, promotion.condition, promotion_applied_items_id.promotiondetail_id, promotion_applied_items_id.promotionid, promotion_applied_items_id.skuid
+SELECT promotion.promotionid, promotion.promotiontitle, promotion.promotiontype, promotion.startdate, promotion.enddate, promotion.description, promotion.condition, promotion_applied_items_id.promotiondetail_id, promotion_applied_items_id.promotionid, promotion_applied_items_id.skuid
 FROM promotion, promotion_applied_items_id
 `
 
 type PostPromotionParams struct {
 	Promotionid       sql.NullString  `json:"promotionid"`
+	Promotiontitle    sql.NullString  `json:"promotiontitle"`
 	Promotiontype     int32           `json:"promotiontype"`
 	Startdate         time.Time       `json:"startdate"`
 	Enddate           time.Time       `json:"enddate"`
@@ -261,6 +264,7 @@ type PostPromotionParams struct {
 
 type PostPromotionRow struct {
 	Promotionid       sql.NullString  `json:"promotionid"`
+	Promotiontitle    sql.NullString  `json:"promotiontitle"`
 	Promotiontype     int32           `json:"promotiontype"`
 	Startdate         time.Time       `json:"startdate"`
 	Enddate           time.Time       `json:"enddate"`
@@ -274,6 +278,7 @@ type PostPromotionRow struct {
 func (q *Queries) PostPromotion(ctx context.Context, arg PostPromotionParams) error {
 	_, err := q.db.ExecContext(ctx, postPromotion,
 		arg.Promotionid,
+		arg.Promotiontitle,
 		arg.Promotiontype,
 		arg.Startdate,
 		arg.Enddate,

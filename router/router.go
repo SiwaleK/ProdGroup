@@ -30,6 +30,8 @@ func RegisterRoute(queries *db.Queries) *gin.Engine {
 
 	//Promotion
 	r.POST("/sale/api/v1/Promotion/DiscountPerItem", promotionHandler.PostDiscountPromotion)
+	r.POST("/sale/api/v1/Promotion/AFreeB", promotionHandler.PostPromotionAFREEB)
+	r.POST("/sale/api/v1/Promotion/StepPurchase", promotionHandler.PostPromotionStepPurchase)
 
 	// PaymentConfig
 	r.GET("/sale/api/v1/PaymentConfig", paymentconfigHandler.GetPaymentConfig)

@@ -12,13 +12,13 @@ SELECT * FROM promotion_applied_items_id;
 
 -- name: PostPromotion :exec
 WITH promotion AS (
-  INSERT INTO promotion (Promotionid, PromotionType, Startdate, Enddate, Description, Condition)
-  VALUES ($1, $2, $3, $4, $5, $6)
+  INSERT INTO promotion (Promotionid,Promotiontitle, PromotionType, Startdate, Enddate, Description, Condition)
+  VALUES ($1, $2, $3, $4, $5, $6,$7)
   RETURNING *
 ),
 promotion_applied_items_id AS (
   INSERT INTO promotion_applied_items_id (Promotiondetail_id, Promotionid, skuid)
-  VALUES ($7, (SELECT Promotionid FROM promotion), $8)
+  VALUES ($8, (SELECT Promotionid FROM promotion), $9)
   RETURNING *
 )
 SELECT promotion.*, promotion_applied_items_id.*

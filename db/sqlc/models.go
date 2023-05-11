@@ -62,12 +62,13 @@ type Prodgroup struct {
 }
 
 type Promotion struct {
-	Promotionid   sql.NullString  `json:"promotionid"`
-	Promotiontype int32           `json:"promotiontype"`
-	Startdate     time.Time       `json:"startdate"`
-	Enddate       time.Time       `json:"enddate"`
-	Description   sql.NullString  `json:"description"`
-	Condition     json.RawMessage `json:"condition"`
+	Promotionid    sql.NullString  `json:"promotionid"`
+	Promotiontitle sql.NullString  `json:"promotiontitle"`
+	Promotiontype  int32           `json:"promotiontype"`
+	Startdate      time.Time       `json:"startdate"`
+	Enddate        time.Time       `json:"enddate"`
+	Description    sql.NullString  `json:"description"`
+	Condition      json.RawMessage `json:"condition"`
 }
 
 type PromotionAppliedItemsID struct {

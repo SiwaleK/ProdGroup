@@ -6,6 +6,7 @@ CREATE TABLE prodgroup (
 
 CREATE TABLE promotion (
   Promotionid VARCHAR(36),
+  Promotiontitle VARCHAR(36),
   PromotionType INT NOT NULL,
   Startdate timestamptz NOT NULL,
   Enddate timestamptz NOT NULL,
