@@ -24,6 +24,16 @@ promotion_applied_items_id AS (
 SELECT promotion.*, promotion_applied_items_id.*
 FROM promotion, promotion_applied_items_id;
 
+-- name: PostPromotionTable :exec
+INSERT INTO promotion (Promotionid, Promotiontitle, PromotionType, Startdate, Enddate, Description, Condition)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING *;
+
+-- name: PostPromotionApplied :exec
+INSERT INTO promotion_applied_items_id (Promotiondetail_id, Promotionid, skuid)
+VALUES ($1, $2, $3)
+RETURNING *;
+
 
 -- name: GetProdgroup :many
 SELECT * FROM prodgroup;

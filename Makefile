@@ -24,3 +24,11 @@ docker run --rm -v "$(pwd):/src" -w /src kjconroy/sqlc:1.17.0 /workspace/sqlc ge
 (Get-Content -Raw -Path ./db/sqlc/*.go) -replace 'sql.NullTime', '*time.Time' | Set-Content -Path ./db/sqlc/*.go
 
 .PHONY: sqlc run
+PS C:\Users\banas\internship\ProdGroup\sku>  (Get-Content -Path "db/sqlc/sku.sql.go") -replace "sql.NullString", "*string" | Set-Content -Path "db/sqlc/sku.sql.go"
+PS C:\Users\banas\internship\ProdGroup\sku>  (Get-Content -Path "db/sqlc/querier.go") -replace "sql.NullString", "*string" | Set-Content -Path "db/sqlc/querier.go"
+PS C:\Users\banas\internship\ProdGroup\sku> (Get-Content -Path "db/sqlc/querier.go") -replace "`"database/sql`"", "" | Set-Content -Path "db/sqlc/querier.go"
+PS C:\Users\banas\internship\ProdGroup\sku> (Get-Content -Path "db/sqlc/sku.sql.go") -replace "`"database/sql`"", "" | Set-Content -Path "db/sqlc/sku.sql.go"
+ (Get-Content -Path "db/sqlc/models.go") -replace "`"database/sql`"", "" | Set-Content -Path "db/sqlc/models.go"
+
+Mockgen:
+    mockgen -source=C:/Users/banas/internship/ProdGroup/sku/repository/promotionRepo.go -destination=repository/Mocks/promotionMockGen.go -package=repository github.com/SiwaleK/ProdGroup PromotionRepository  

@@ -25,47 +25,34 @@ type ConditionAFREEB struct {
 }
 
 type ConditionDiscount struct {
-	Discount int
+	Discount int32
 }
 
 type AppliedItems struct {
-	ID                string `json:"id"`
-	PromotiondetailID string `json:"promotiondetailID"`
-	SKUID             string `json:"skuid"`
+	PromotiondetailID *string `json:"promotiondetail_ID"`
+	Skuid             *string `json:"skuid"`
 }
 
 type PostPromotionDiscountRequest struct {
-	Promotionid    *string   `json:"id"`
-	Promotiontitle *string   `json:"title"`
-	Promotiontype  int32     `json:"promotiontype"`
-	Startdate      time.Time `json:"startDate"`
-	Enddate        time.Time `json:"endDate"`
-	Description    *string   `json:"text"`
-	Condition      struct {
-		Discount int
-	}
-	AppliedItemsID []struct {
-		PromotiondetailID *string `json:"promotiondetail_id"`
-		Skuid             *string `json:"skuid"`
-	} `json:"appliedItemsId"`
+	Promotionid    *string           `json:"id"`
+	Promotiontitle *string           `json:"title"`
+	Promotiontype  int32             `json:"promotiontype"`
+	Startdate      time.Time         `json:"startDate"`
+	Enddate        time.Time         `json:"endDate"`
+	Description    *string           `json:"text"`
+	Condition      ConditionDiscount `json:"condition"`
+	AppliedItemsID []AppliedItems    `json:"appliedItemsId"`
 }
 
 type PostPromotionAFREEBRequest struct {
-	Promotionid    *string   `json:"id"`
-	Promotiontitle *string   `json:"title"`
-	Promotiontype  int32     `json:"promotiontype"`
-	Startdate      time.Time `json:"startdate"`
-	Enddate        time.Time `json:"enddate"`
-	Description    *string   `json:"text"`
-	Condition      struct {
-		MinimumAmountToEnable int
-		FreeAmount            int
-		PremiumItemsId        []string
-	} `json:"condition"`
-	AppliedItemsID []struct {
-		PromotiondetailID *string `json:"promotiondetail_id"`
-		Skuid             *string `json:"skuid"`
-	} `json:"appliedItemsId"`
+	Promotionid    *string         `json:"id"`
+	Promotiontitle *string         `json:"title"`
+	Promotiontype  int32           `json:"promotiontype"`
+	Startdate      time.Time       `json:"startdate"`
+	Enddate        time.Time       `json:"enddate"`
+	Description    *string         `json:"text"`
+	Condition      ConditionAFREEB `json:"condition"`
+	AppliedItemsID []AppliedItems  `json:"appliedItemsId"`
 }
 
 type ConditionStepPurchase struct {
@@ -78,62 +65,67 @@ type SpecialPriceAtXItemConditionDetail struct {
 }
 
 type PostPromotionStepPurchaseRequest struct {
-	Promotionid    *string   `json:"id"`
-	Promotiontitle *string   `json:"title"`
-	Promotiontype  int32     `json:"promotiontype"`
-	Startdate      time.Time `json:"startdate"`
-	Enddate        time.Time `json:"enddate"`
-	Description    *string   `json:"text"`
-	Condition      struct {
-		SpecialPriceAtXItemConditionDetail []struct {
-			MinimumItemToEnable int `json:"minimumItemToEnable"`
-			Discount            int `json:"discount"`
-		} `json:"specialPriceAtXItemConditionDetail"`
-	} `json:"condition"`
-	AppliedItemsID []struct {
-		PromotiondetailID *string `json:"promotiondetail_id"`
-		Skuid             *string `json:"skuid"`
-	} `json:"appliedItemsId"`
+	Promotionid    *string               `json:"id"`
+	Promotiontitle *string               `json:"title"`
+	Promotiontype  int32                 `json:"promotiontype"`
+	Startdate      time.Time             `json:"startdate"`
+	Enddate        time.Time             `json:"enddate"`
+	Description    *string               `json:"text"`
+	Condition      ConditionStepPurchase `json:"condition"`
+	AppliedItemsID []AppliedItems        `json:"appliedItemsId"`
 }
 
 func (h PromotionHandler) PostDiscountPromotion(c *gin.Context) {
-
 	var req PostPromotionDiscountRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid promotion ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid promotion ID",
+			"errorDetail": err.Error()})
 		return
 	}
+
 	condition := ConditionDiscount{
 		Discount: req.Condition.Discount,
 	}
 
 	conditionBytes, err := json.Marshal(condition)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to marshal condition"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to marshal condition", "errorDetail": err.Error()})
+		return
+	}
+	rawCondition := json.RawMessage(conditionBytes)
+
+	var args []db.PostPromotionAppliedParams
+
+	for _, item := range req.AppliedItemsID {
+		a := db.PostPromotionAppliedParams{
+			Promotionid:       req.Promotionid,
+			Skuid:             item.Skuid,
+			PromotiondetailID: item.PromotiondetailID,
+		}
+
+		args = append(args, a)
+	}
+
+	err = h.repo.PostPromotionAppliedItem(c.Request.Context(), args)
+	if err != nil {
+		// Handle error
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"errorCode":   "Failed to save appliedItemsId",
+			"errorDetail": err.Error(),
+		})
 		return
 	}
 
-	appliedItemsIDs := make([]struct {
-		PromotiondetailID *string `json:"promotiondetail_id"`
-		Skuid             *string `json:"skuid"`
-	}, len(req.AppliedItemsID))
-
-	for i, item := range req.AppliedItemsID {
-		appliedItemsIDs[i].PromotiondetailID = item.PromotiondetailID
-		appliedItemsIDs[i].Skuid = item.Skuid
-	}
-	rawCondition := json.RawMessage(conditionBytes)
-	arg := db.PostPromotionParams{
-		Promotionid:       req.Promotionid,
-		Promotiontitle:    req.Promotiontitle,
-		Promotiontype:     req.Promotiontype,
-		Startdate:         req.Startdate,
-		Enddate:           req.Enddate,
-		Description:       req.Description,
-		Condition:         rawCondition,
-		Skuid:             appliedItemsIDs[0].Skuid,
-		PromotiondetailID: appliedItemsIDs[0].PromotiondetailID,
+	// Save other columns in main table
+	arg := db.PostPromotionTableParams{
+		Promotionid:    req.Promotionid,
+		Promotiontitle: req.Promotiontitle,
+		Promotiontype:  req.Promotiontype,
+		Startdate:      req.Startdate,
+		Enddate:        req.Enddate,
+		Description:    req.Description,
+		Condition:      rawCondition,
 	}
 
 	err = h.repo.PostPromotion(c.Request.Context(), arg)
@@ -141,26 +133,29 @@ func (h PromotionHandler) PostDiscountPromotion(c *gin.Context) {
 		// Handle specific errors
 		if err.Error() == "validation_error" {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "Validation Error",
+				"error":       "Validation Error",
+				"errorDetail": err.Error(),
 			})
 			return
 		} else if err.Error() == "database_error" {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Database Error",
+				"error":       "Database Error",
+				"errorDetail": err.Error(),
 			})
 			return
 		}
 
 		// Handle other errors
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error":  "Internal Server Error",
-			"detail": err.Error(),
+			"errorCode":   "Internal Server Error",
+			"errorDetail": err.Error(),
 		})
 		return
 	}
 
 	// Return the JSON response
-	c.JSON(http.StatusOK, gin.H{"message": "Promotion created successfully"})
+	c.JSON(http.StatusOK, gin.H{})
+
 }
 
 func (h PromotionHandler) PostPromotionAFREEB(c *gin.Context) {
@@ -168,7 +163,7 @@ func (h PromotionHandler) PostPromotionAFREEB(c *gin.Context) {
 	var req PostPromotionAFREEBRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid promotion ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid promotion ID", "errorDetail": err.Error()})
 		return
 	}
 
@@ -180,31 +175,42 @@ func (h PromotionHandler) PostPromotionAFREEB(c *gin.Context) {
 
 	conditionBytes, err := json.Marshal(condition)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to marshal condition"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to marshal condition", "errorDetail": err.Error()})
+		return
+	}
+	rawCondition := json.RawMessage(conditionBytes)
+
+	var args []db.PostPromotionAppliedParams
+
+	for _, item := range req.AppliedItemsID {
+		a := db.PostPromotionAppliedParams{
+			Promotionid:       req.Promotionid,
+			Skuid:             item.Skuid,
+			PromotiondetailID: item.PromotiondetailID,
+		}
+
+		args = append(args, a)
+	}
+
+	err = h.repo.PostPromotionAppliedItem(c.Request.Context(), args)
+	if err != nil {
+		// Handle error
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"errorCode":   "Failed to save appliedItemsId",
+			"errorDetail": err.Error(),
+		})
 		return
 	}
 
-	appliedItemsIDs := make([]struct {
-		PromotiondetailID *string `json:"promotiondetail_id"`
-		Skuid             *string `json:"skuid"`
-	}, len(req.AppliedItemsID))
-
-	for i, item := range req.AppliedItemsID {
-		appliedItemsIDs[i].PromotiondetailID = item.PromotiondetailID
-		appliedItemsIDs[i].Skuid = item.Skuid
-	}
-
-	rawCondition := json.RawMessage(conditionBytes)
-	arg := db.PostPromotionParams{
-		Promotionid:       req.Promotionid,
-		Promotiontitle:    req.Promotiontitle,
-		Promotiontype:     req.Promotiontype,
-		Startdate:         req.Startdate,
-		Enddate:           req.Enddate,
-		Description:       req.Description,
-		Condition:         rawCondition,
-		Skuid:             appliedItemsIDs[0].Skuid,
-		PromotiondetailID: appliedItemsIDs[0].PromotiondetailID,
+	// Save other columns in main table
+	arg := db.PostPromotionTableParams{
+		Promotionid:    req.Promotionid,
+		Promotiontitle: req.Promotiontitle,
+		Promotiontype:  req.Promotiontype,
+		Startdate:      req.Startdate,
+		Enddate:        req.Enddate,
+		Description:    req.Description,
+		Condition:      rawCondition,
 	}
 
 	err = h.repo.PostPromotion(c.Request.Context(), arg)
@@ -212,26 +218,28 @@ func (h PromotionHandler) PostPromotionAFREEB(c *gin.Context) {
 		// Handle specific errors
 		if err.Error() == "validation_error" {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "Validation Error",
+				"error":       "Validation Error",
+				"errorDetail": err.Error(),
 			})
 			return
 		} else if err.Error() == "database_error" {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Database Error",
+				"error":       "Database Error",
+				"errorDetail": err.Error(),
 			})
 			return
 		}
 
 		// Handle other errors
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error":  "Internal Server Error",
-			"detail": err.Error(),
+			"errorCode":   "Internal Server Error",
+			"errorDetail": err.Error(),
 		})
 		return
 	}
 
 	// Return the JSON response
-	c.JSON(http.StatusOK, gin.H{"message": "Promotion created successfully"})
+	c.JSON(http.StatusOK, gin.H{})
 
 }
 
@@ -242,7 +250,6 @@ func (h PromotionHandler) PostPromotionStepPurchase(c *gin.Context) {
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "error", "detail": err.Error()})
 		return
-
 	}
 
 	specialPriceConditions := ConditionStepPurchase{
@@ -261,26 +268,38 @@ func (h PromotionHandler) PostPromotionStepPurchase(c *gin.Context) {
 	}
 
 	rawCondition := json.RawMessage(conditionBytes)
-	appliedItemsIDs := make([]struct {
-		PromotiondetailID *string `json:"promotiondetail_id"`
-		Skuid             *string `json:"skuid"`
-	}, len(req.AppliedItemsID))
 
-	for i, item := range req.AppliedItemsID {
-		appliedItemsIDs[i].PromotiondetailID = item.PromotiondetailID
-		appliedItemsIDs[i].Skuid = item.Skuid
+	var args []db.PostPromotionAppliedParams
+
+	for _, item := range req.AppliedItemsID {
+		a := db.PostPromotionAppliedParams{
+			Promotionid:       req.Promotionid,
+			Skuid:             item.Skuid,
+			PromotiondetailID: item.PromotiondetailID,
+		}
+
+		args = append(args, a)
 	}
 
-	arg := db.PostPromotionParams{
-		Promotionid:       req.Promotionid,
-		Promotiontitle:    req.Promotiontitle,
-		Promotiontype:     req.Promotiontype,
-		Startdate:         req.Startdate,
-		Enddate:           req.Enddate,
-		Description:       req.Description,
-		Condition:         rawCondition,
-		Skuid:             appliedItemsIDs[0].Skuid,
-		PromotiondetailID: appliedItemsIDs[0].PromotiondetailID,
+	err = h.repo.PostPromotionAppliedItem(c.Request.Context(), args)
+	if err != nil {
+		// Handle error
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"errorCode":   "Failed to save appliedItemsId",
+			"errorDetail": err.Error(),
+		})
+		return
+	}
+
+	// Save other columns in main table
+	arg := db.PostPromotionTableParams{
+		Promotionid:    req.Promotionid,
+		Promotiontitle: req.Promotiontitle,
+		Promotiontype:  req.Promotiontype,
+		Startdate:      req.Startdate,
+		Enddate:        req.Enddate,
+		Description:    req.Description,
+		Condition:      rawCondition,
 	}
 
 	err = h.repo.PostPromotion(c.Request.Context(), arg)
@@ -288,25 +307,24 @@ func (h PromotionHandler) PostPromotionStepPurchase(c *gin.Context) {
 		// Handle specific errors
 		if err.Error() == "validation_error" {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "Validation Error",
+				"error":       "Validation Error",
+				"errorDetail": err.Error(),
 			})
 			return
 		} else if err.Error() == "database_error" {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Database Error",
+				"error":       "Database Error",
+				"errorDetail": err.Error(),
 			})
 			return
 		}
 
 		// Handle other errors
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error":  "Internal Server Error",
-			"detail": err.Error(),
-		})
+		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
 
 	// Return the JSON response
-	c.JSON(http.StatusOK, gin.H{"message": "Promotion created successfully"})
+	c.JSON(http.StatusOK, gin.H{})
 
 }

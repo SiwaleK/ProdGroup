@@ -35,7 +35,11 @@ import (
 // // }
 
 type PromotionRepository interface {
-	PostPromotion(ctx context.Context, arg db.PostPromotionParams) error
+	//PostPromotion(ctx context.Context, arg db.PostPromotionParams, args []db.PostPromotionParams) error
+	//PostPromotion2(ctx context.Context, arg db.PostPromotionParams) error
+	PostPromotionAppliedItem(ctx context.Context, arg []db.PostPromotionAppliedParams) error
+	//PostPromotion4(ctx context.Context, arg db.PostPromotionAppliedParams) error
+	PostPromotion(ctx context.Context, arg db.PostPromotionTableParams) error
 }
 
 type DBPromotionRepository struct {
@@ -48,7 +52,39 @@ func NewPromotionRepository(db *db.Queries) PromotionRepository {
 	}
 }
 
-func (repo *DBPromotionRepository) PostPromotion(ctx context.Context, arg db.PostPromotionParams) error {
-	err := repo.db.PostPromotion(ctx, arg)
+// func (repo *DBPromotionRepository) PostPromotion(ctx context.Context, arg db.PostPromotionParams, args []db.PostPromotionParams) error {
+// 	// Use arg and args as needed
+// 	// Call the underlying database implementation
+// 	err := repo.db.PostPromotion(ctx, arg)
+// 	return err
+// }
+
+// func (repo *DBPromotionRepository) PostPromotion2(ctx context.Context, arg db.PostPromotionParams) error {
+// 	// Use arg as needed
+// 	// Call the underlying database implementation
+// 	err := repo.db.PostPromotion(ctx, arg)
+// 	return err
+// }
+
+func (repo *DBPromotionRepository) PostPromotionAppliedItem(ctx context.Context, arg []db.PostPromotionAppliedParams) error {
+	for _, a := range arg {
+		err := repo.db.PostPromotionApplied(ctx, a)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+//	func (repo *DBPromotionRepository) PostPromotion4(ctx context.Context, arg db.PostPromotionAppliedParams) error {
+//		// Use arg as needed
+//		// Call the underlying database implementation
+//		err := repo.db.PostPromotionApplied(ctx, arg)
+//		return err
+//	}
+func (repo *DBPromotionRepository) PostPromotion(ctx context.Context, arg db.PostPromotionTableParams) error {
+	// Use arg and args as needed
+	// Call the underlying database implementation
+	err := repo.db.PostPromotionTable(ctx, arg)
 	return err
 }

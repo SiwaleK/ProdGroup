@@ -290,6 +290,52 @@ func (q *Queries) PostPromotion(ctx context.Context, arg PostPromotionParams) er
 	return err
 }
 
+const postPromotionApplied = `-- name: PostPromotionApplied :exec
+INSERT INTO promotion_applied_items_id (Promotiondetail_id, Promotionid, skuid)
+VALUES ($1, $2, $3)
+RETURNING promotiondetail_id, promotionid, skuid
+`
+
+type PostPromotionAppliedParams struct {
+	PromotiondetailID *string `json:"promotiondetail_id"`
+	Promotionid       *string `json:"promotionid"`
+	Skuid             *string `json:"skuid"`
+}
+
+func (q *Queries) PostPromotionApplied(ctx context.Context, arg PostPromotionAppliedParams) error {
+	_, err := q.db.ExecContext(ctx, postPromotionApplied, arg.PromotiondetailID, arg.Promotionid, arg.Skuid)
+	return err
+}
+
+const postPromotionTable = `-- name: PostPromotionTable :exec
+INSERT INTO promotion (Promotionid, Promotiontitle, PromotionType, Startdate, Enddate, Description, Condition)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING promotionid, promotiontitle, promotiontype, startdate, enddate, description, condition
+`
+
+type PostPromotionTableParams struct {
+	Promotionid    *string  `json:"promotionid"`
+	Promotiontitle *string  `json:"promotiontitle"`
+	Promotiontype  int32           `json:"promotiontype"`
+	Startdate      time.Time       `json:"startdate"`
+	Enddate        time.Time       `json:"enddate"`
+	Description    *string  `json:"description"`
+	Condition      json.RawMessage `json:"condition"`
+}
+
+func (q *Queries) PostPromotionTable(ctx context.Context, arg PostPromotionTableParams) error {
+	_, err := q.db.ExecContext(ctx, postPromotionTable,
+		arg.Promotionid,
+		arg.Promotiontitle,
+		arg.Promotiontype,
+		arg.Startdate,
+		arg.Enddate,
+		arg.Description,
+		arg.Condition,
+	)
+	return err
+}
+
 const upsertPaymentConfig = `-- name: UpsertPaymentConfig :exec
 WITH upsert_data AS (
     INSERT INTO posclient (is_cash, is_qrcode, is_paotang, is_tongfah, is_coupon, printer_type)
@@ -328,4 +374,3 @@ func (q *Queries) UpsertPaymentConfig(ctx context.Context, arg UpsertPaymentConf
 	)
 	return err
 }
-

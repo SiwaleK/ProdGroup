@@ -18,8 +18,9 @@ type Querier interface {
 	GetPromotionAppliedItemID(ctx context.Context) ([]PromotionAppliedItemsID, error)
 	GetPromotionByID(ctx context.Context, promotionid *string) (Promotion, error)
 	PostPromotion(ctx context.Context, arg PostPromotionParams) error
+	PostPromotionApplied(ctx context.Context, arg PostPromotionAppliedParams) error
+	PostPromotionTable(ctx context.Context, arg PostPromotionTableParams) error
 	UpsertPaymentConfig(ctx context.Context, arg UpsertPaymentConfigParams) error
 }
 
 var _ Querier = (*Queries)(nil)
-

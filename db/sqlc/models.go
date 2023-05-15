@@ -5,40 +5,40 @@
 package db
 
 import (
-	"database/sql"
+	
 	"encoding/json"
 	"time"
 )
 
 type Branch struct {
-	BranchID          sql.NullString `json:"branch_id"`
-	MerchantID        sql.NullString `json:"merchant_id"`
-	BranchNo          sql.NullString `json:"branch_no"`
-	BranchName        sql.NullString `json:"branch_name"`
-	BranchAddress     sql.NullString `json:"branch_address"`
-	BranchEmail       sql.NullString `json:"branch_email"`
-	AccountName       sql.NullString `json:"account_name"`
-	AccountCode       sql.NullString `json:"account_code"`
+	BranchID          *string `json:"branch_id"`
+	MerchantID        *string `json:"merchant_id"`
+	BranchNo          *string `json:"branch_no"`
+	BranchName        *string `json:"branch_name"`
+	BranchAddress     *string `json:"branch_address"`
+	BranchEmail       *string `json:"branch_email"`
+	AccountName       *string `json:"account_name"`
+	AccountCode       *string `json:"account_code"`
 	IsActive          interface{}    `json:"is_active"`
-	BranchAddress2    sql.NullString `json:"branch_address2"`
-	BranchSubdistrict sql.NullString `json:"branch_subdistrict"`
-	BranchDistrict    sql.NullString `json:"branch_district"`
-	BranchProvince    sql.NullString `json:"branch_province"`
-	BranchZipcode     sql.NullString `json:"branch_zipcode"`
+	BranchAddress2    *string `json:"branch_address2"`
+	BranchSubdistrict *string `json:"branch_subdistrict"`
+	BranchDistrict    *string `json:"branch_district"`
+	BranchProvince    *string `json:"branch_province"`
+	BranchZipcode     *string `json:"branch_zipcode"`
 	IsInventory       interface{}    `json:"is_inventory"`
 	IsAlertInventory  interface{}    `json:"is_alert_inventory"`
 }
 
 type PaymentMethod struct {
 	Paymentmethodid int32          `json:"paymentmethodid"`
-	Paymentname     sql.NullString `json:"paymentname"`
+	Paymentname     *string `json:"paymentname"`
 }
 
 type Posclient struct {
-	PosClientID       sql.NullString `json:"pos_client_id"`
-	BranchID          sql.NullString `json:"branch_id"`
-	MerchantID        sql.NullString `json:"merchant_id"`
-	RdNumber          sql.NullString `json:"rd_number"`
+	PosClientID       *string `json:"pos_client_id"`
+	BranchID          *string `json:"branch_id"`
+	MerchantID        *string `json:"merchant_id"`
+	RdNumber          *string `json:"rd_number"`
 	IsDrawer          interface{}    `json:"is_drawer"`
 	IsBarcode         interface{}    `json:"is_barcode"`
 	IsCash            interface{}    `json:"is_cash"`
@@ -50,29 +50,29 @@ type Posclient struct {
 	BarcodeReaderType interface{}    `json:"barcode_reader_type"`
 	PrinterType       interface{}    `json:"printer_type"`
 	IsActive          interface{}    `json:"is_active"`
-	PosRunning        sql.NullString `json:"pos_running"`
-	FrPosRunning      sql.NullString `json:"fr_pos_running"`
+	PosRunning        *string `json:"pos_running"`
+	FrPosRunning      *string `json:"fr_pos_running"`
 	PaymentMode       interface{}    `json:"payment_mode"`
 }
 
 type Prodgroup struct {
 	Prodgroupid int32          `json:"prodgroupid"`
-	ThName      sql.NullString `json:"th_name"`
-	EnName      sql.NullString `json:"en_name"`
+	ThName      *string `json:"th_name"`
+	EnName      *string `json:"en_name"`
 }
 
 type Promotion struct {
-	Promotionid    sql.NullString  `json:"promotionid"`
-	Promotiontitle sql.NullString  `json:"promotiontitle"`
+	Promotionid    *string  `json:"promotionid"`
+	Promotiontitle *string  `json:"promotiontitle"`
 	Promotiontype  int32           `json:"promotiontype"`
 	Startdate      time.Time       `json:"startdate"`
 	Enddate        time.Time       `json:"enddate"`
-	Description    sql.NullString  `json:"description"`
+	Description    *string  `json:"description"`
 	Condition      json.RawMessage `json:"condition"`
 }
 
 type PromotionAppliedItemsID struct {
-	PromotiondetailID sql.NullString `json:"promotiondetail_id"`
-	Promotionid       sql.NullString `json:"promotionid"`
-	Skuid             sql.NullString `json:"skuid"`
+	PromotiondetailID *string `json:"promotiondetail_id"`
+	Promotionid       *string `json:"promotionid"`
+	Skuid             *string `json:"skuid"`
 }
