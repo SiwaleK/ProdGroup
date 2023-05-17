@@ -17,6 +17,6 @@ func (r *PaymentMethodRepositoryMock) GetPaymentMethod(ctx context.Context) (*db
 	if payment_method, ok := args.Get(0).(*db.PaymentMethod); ok {
 		return payment_method, args.Error(1)
 	}
-
 	return nil, args.Error(1)
+
 }

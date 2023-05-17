@@ -7,8 +7,9 @@ import (
 )
 
 type PaymentConfigRepository interface {
-	GetPaymentConfig(ctx context.Context) ([]GetPaymentConfigRowWithPrinter, error)
-	UpsertPaymentConfig(ctx context.Context, arg db.UpsertPaymentConfigParams) error
+	GetPaymentConfig(ctx context.Context) ([]db.GetPaymentConfigRow, error)
+	GetPaymentMethod(ctx context.Context) ([]db.PaymentMethod, error)
+	GetPosClientMethod(ctx context.Context, posClientID *string) ([]db.GetPosClientMethodRow, error)
 }
 
 type DBPaymentConfigRepository struct {
@@ -21,65 +22,55 @@ func NewPaymentConfigRepository(db *db.Queries) PaymentConfigRepository {
 	}
 }
 
-type Printerconfig struct {
-	Value int    `json:"value"`
-	Title string `json:"title"`
-}
-
-type GetPaymentConfigRowWithPrinter struct {
-	db.GetPaymentConfigRow
-	Printerconfig []Printerconfig `json:"printerconfig"`
-}
-
-func (r *DBPaymentConfigRepository) GetPaymentConfig(ctx context.Context) ([]GetPaymentConfigRowWithPrinter, error) {
-	dbPaymentconfigs, err := r.db.GetPaymentConfig(ctx)
+func (r *DBPaymentConfigRepository) GetPaymentConfig(ctx context.Context) ([]db.GetPaymentConfigRow, error) {
+	dbPaymentConfig, err := r.db.GetPaymentConfig(ctx)
 	if err != nil {
 		return nil, err
 	}
-
-	paymentconfigs := make([]GetPaymentConfigRowWithPrinter, len(dbPaymentconfigs))
-	for i, dbPaymentconfig := range dbPaymentconfigs {
-		printerType, ok := dbPaymentconfig.PrinterType.(int)
-		if !ok {
-			// Handle the case where the PrinterType is not an int
-			// You can choose to set a default value or return an error, depending on your requirements
-			printerType = 0 // Set a default value of 0
+	paymentConfig := make([]db.GetPaymentConfigRow, len(dbPaymentConfig))
+	for i, dbPaymentConfig := range dbPaymentConfig {
+		paymentConfig[i] = db.GetPaymentConfigRow{
+			AccountName: dbPaymentConfig.AccountName,
+			AccountCode: dbPaymentConfig.AccountCode,
 		}
-
-		printerConfig := Printerconfig{
-			Value: printerType,
-			Title: "test",
-		}
-
-		paymentconfig := GetPaymentConfigRowWithPrinter{
-			GetPaymentConfigRow: db.GetPaymentConfigRow{
-				IsCash:      dbPaymentconfig.IsCash,
-				IsQrcode:    dbPaymentconfig.IsQrcode,
-				IsPaotang:   dbPaymentconfig.IsPaotang,
-				IsTongfah:   dbPaymentconfig.IsTongfah,
-				IsCoupon:    dbPaymentconfig.IsCoupon,
-				AccountName: dbPaymentconfig.AccountName,
-				AccountCode: dbPaymentconfig.AccountCode,
-				PrinterType: dbPaymentconfig.PrinterType,
-			},
-			Printerconfig: []Printerconfig{printerConfig},
-		}
-		paymentconfigs[i] = paymentconfig
 	}
 
-	return paymentconfigs, nil
+	return paymentConfig, nil
 }
 
-func (repo *DBPaymentConfigRepository) UpsertPaymentConfig(ctx context.Context, arg db.UpsertPaymentConfigParams) error {
-	err := repo.db.UpsertPaymentConfig(ctx, db.UpsertPaymentConfigParams{
-		IsCash:      arg.IsCash,
-		IsQrcode:    arg.IsQrcode,
-		IsPaotang:   arg.IsPaotang,
-		IsTongfah:   arg.IsTongfah,
-		IsCoupon:    arg.IsCoupon,
-		PrinterType: arg.PrinterType,
-		//AccountName: arg.AccountName,
-		//AccountCode: arg.AccountCode,
-	})
-	return err
+func (r *DBPaymentConfigRepository) GetPaymentMethod(ctx context.Context) ([]db.PaymentMethod, error) {
+	dbPaymentMethod, err := r.db.GetPaymentMethod(ctx)
+	if err != nil {
+		return nil, err
+	}
+	paymentMethod := make([]db.PaymentMethod, len(dbPaymentMethod))
+	for i, dbPaymentMethod := range dbPaymentMethod {
+		paymentMethod[i] = db.PaymentMethod{
+			Paymentmethodid: dbPaymentMethod.Paymentmethodid,
+			Paymentname:     dbPaymentMethod.Paymentname,
+		}
+	}
+
+	return paymentMethod, nil
+}
+
+func (r *DBPaymentConfigRepository) GetPosClientMethod(ctx context.Context, posClientID *string) ([]db.GetPosClientMethodRow, error) {
+	dbPosclient, err := r.db.GetPosClientMethod(ctx, posClientID)
+	if err != nil {
+		return nil, err
+	}
+	posclient := make([]db.GetPosClientMethodRow, len(dbPosclient))
+	for i, dbPosclient := range dbPosclient {
+		posclient[i] = db.GetPosClientMethodRow{
+			IsCash:      dbPosclient.IsCash,
+			IsPaotang:   dbPosclient.IsPaotang,
+			IsQrcode:    dbPosclient.IsQrcode,
+			IsTongfah:   dbPosclient.IsTongfah,
+			IsCoupon:    dbPosclient.IsCoupon,
+			AccountName: dbPosclient.AccountName,
+			AccountCode: dbPosclient.AccountCode,
+		}
+	}
+
+	return dbPosclient, nil
 }

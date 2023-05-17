@@ -6,39 +6,16 @@ import (
 	db "github.com/SiwaleK/ProdGroup/db/sqlc"
 )
 
-// // type PromotionRepository struct {
-// // 	queries *db.Queries
-// // }
-
-// // func NewDBPromotionRepository(queries *db.Queries) *PromotionRepository {
-// // 	return &PromotionRepository{queries: queries}
-// // }
-
-// // func (r *PromotionRepository) GetPromotionByID(ctx context.Context, promotionID string) (*db.Promotion, error) {
-// // 	dbPromotion, err := r.queries.GetPromotionByID(ctx, sql.NullString{
-// // 		String: promotionID,
-// // 		Valid:  promotionID != "",
-// // 	})
-// // 	if err != nil {
-// // 		return nil, err
-// // 	}
-
-// // 	promotions := &db.Promotion{
-// // 		Promotionid: dbPromotion.Promotionid,
-// // 		Startdate:   dbPromotion.Startdate,
-// // 		Enddate:     dbPromotion.Enddate,
-// // 		Description: dbPromotion.Description,
-// // 		Condition:   dbPromotion.Condition,
-// // 	}
-
-// // 	return promotions, nil
-// // }
-
 type PromotionRepository interface {
 	//PostPromotion(ctx context.Context, arg db.PostPromotionParams, args []db.PostPromotionParams) error
 	//PostPromotion2(ctx context.Context, arg db.PostPromotionParams) error
 	PostPromotionAppliedItem(ctx context.Context, arg []db.PostPromotionAppliedParams) error
 	//PostPromotion4(ctx context.Context, arg db.PostPromotionAppliedParams) error
+	PostPromotion(ctx context.Context, arg db.PostPromotionTableParams) error
+}
+
+type PromotionMock interface {
+	PostPromotionAppliedItem(ctx context.Context, arg []db.PostPromotionAppliedParams)
 	PostPromotion(ctx context.Context, arg db.PostPromotionTableParams) error
 }
 

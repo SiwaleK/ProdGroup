@@ -1,7 +1,10 @@
 package router
 
 import (
-	"github.com/SiwaleK/ProdGroup/controller"
+	payment_config "github.com/SiwaleK/ProdGroup/controller/payment_config"
+	payment_method "github.com/SiwaleK/ProdGroup/controller/payment_method"
+	prodgroup "github.com/SiwaleK/ProdGroup/controller/prodgroup"
+	promotion "github.com/SiwaleK/ProdGroup/controller/promotion"
 	db "github.com/SiwaleK/ProdGroup/db/sqlc"
 	"github.com/SiwaleK/ProdGroup/repository"
 	"github.com/gin-gonic/gin"
@@ -16,10 +19,10 @@ func RegisterRoute(queries *db.Queries) *gin.Engine {
 	paymentconfigRepo := repository.NewPaymentConfigRepository(queries)
 
 	// Initialize handlers
-	prodgroupHandler := controller.NewProdgroupHandler(prodgroupRepo)
-	paymentmethodHandler := controller.NewPaymentMethodHandler(paymentmethodRepo)
-	promotionHandler := controller.NewPromotionHandler(promotionRepo)
-	paymentconfigHandler := controller.NewPaymentConfighandler(paymentconfigRepo)
+	prodgroupHandler := prodgroup.NewProdgroupHandler(prodgroupRepo)
+	paymentmethodHandler := payment_method.NewPaymentMethodHandler(paymentmethodRepo)
+	promotionHandler := promotion.NewPromotionHandler(promotionRepo)
+	paymentconfigHandler := payment_config.NewPaymentConfighandler(paymentconfigRepo)
 
 	// Initialize router
 	r := gin.Default()
@@ -34,8 +37,8 @@ func RegisterRoute(queries *db.Queries) *gin.Engine {
 	r.POST("/sale/api/v1/Promotion/StepPurchase", promotionHandler.PostPromotionStepPurchase)
 
 	// PaymentConfig
-	r.GET("/sale/api/v1/PaymentConfig", paymentconfigHandler.GetPaymentConfig)
-	r.POST("/sale/api/v1/PaymentConfig", paymentconfigHandler.UpsertPaymentConfigHandler)
+
+	r.GET("/sale/api/v1/PaymentConfig", paymentconfigHandler.GetPosClientMethod)
 
 	return r
 }

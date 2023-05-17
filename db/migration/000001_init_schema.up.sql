@@ -31,20 +31,20 @@ CREATE TABLE posclient (
 	branch_id VARCHAR(36) NULL,
 	merchant_id VARCHAR(36) NULL,
 	rd_number VARCHAR(36) NULL,
-	is_drawer TINYINT NULL,
-	is_barcode TINYINT NULL,
-	is_cash TINYINT NULL,
-	is_qrcode TINYINT NULL,
-	is_paotang TINYINT NULL,
-	is_tongfah TINYINT NULL,
-	is_coupon TINYINT NULL,
-	session_type TINYINT NULL,
-	barcode_reader_type TINYINT NULL,
-	printer_type TINYINT NULL,
-	is_active TINYINT NOT NULL,
+	is_drawer SMALLINT NULL,
+	is_barcode SMALLINT NULL,
+	is_cash SMALLINT NULL,
+	is_qrcode SMALLINT NULL,
+	is_paotang SMALLINT NULL,
+	is_tongfah SMALLINT NULL,
+	is_coupon SMALLINT NULL,
+	session_type SMALLINT NULL,
+	barcode_reader_type SMALLINT NULL,
+	printer_type SMALLINT NULL,
+	is_active SMALLINT NOT NULL,
 	pos_running VARCHAR(5) NULL,
 	fr_pos_running VARCHAR(5) NULL,
-	payment_mode TINYINT NULL
+	payment_mode SMALLINT NULL
 );
 
 CREATE TABLE branch (

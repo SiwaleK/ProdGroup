@@ -39,20 +39,20 @@ type Posclient struct {
 	BranchID          *string `json:"branch_id"`
 	MerchantID        *string `json:"merchant_id"`
 	RdNumber          *string `json:"rd_number"`
-	IsDrawer          interface{}    `json:"is_drawer"`
-	IsBarcode         interface{}    `json:"is_barcode"`
-	IsCash            interface{}    `json:"is_cash"`
-	IsQrcode          interface{}    `json:"is_qrcode"`
-	IsPaotang         interface{}    `json:"is_paotang"`
-	IsTongfah         interface{}    `json:"is_tongfah"`
-	IsCoupon          interface{}    `json:"is_coupon"`
-	SessionType       interface{}    `json:"session_type"`
-	BarcodeReaderType interface{}    `json:"barcode_reader_type"`
-	PrinterType       interface{}    `json:"printer_type"`
-	IsActive          interface{}    `json:"is_active"`
+	IsDrawer          *int16  `json:"is_drawer"`
+	IsBarcode         *int16  `json:"is_barcode"`
+	IsCash            *int16  `json:"is_cash"`
+	IsQrcode          *int16  `json:"is_qrcode"`
+	IsPaotang         *int16  `json:"is_paotang"`
+	IsTongfah         *int16  `json:"is_tongfah"`
+	IsCoupon          *int16  `json:"is_coupon"`
+	SessionType       *int16  `json:"session_type"`
+	BarcodeReaderType *int16  `json:"barcode_reader_type"`
+	PrinterType       *int16  `json:"printer_type"`
+	IsActive          int16          `json:"is_active"`
 	PosRunning        *string `json:"pos_running"`
 	FrPosRunning      *string `json:"fr_pos_running"`
-	PaymentMode       interface{}    `json:"payment_mode"`
+	PaymentMode       *int16  `json:"payment_mode"`
 }
 
 type Prodgroup struct {

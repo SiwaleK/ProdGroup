@@ -12,6 +12,7 @@ import (
 type Querier interface {
 	GetPaymentConfig(ctx context.Context) ([]GetPaymentConfigRow, error)
 	GetPaymentMethod(ctx context.Context) ([]PaymentMethod, error)
+	GetPosClientMethod(ctx context.Context, posClientID *string) ([]GetPosClientMethodRow, error)
 	GetProdgroup(ctx context.Context) ([]Prodgroup, error)
 	GetProdgroupByID(ctx context.Context, prodgroupid int32) ([]Prodgroup, error)
 	GetPromotion(ctx context.Context) ([]Promotion, error)
@@ -20,7 +21,6 @@ type Querier interface {
 	PostPromotion(ctx context.Context, arg PostPromotionParams) error
 	PostPromotionApplied(ctx context.Context, arg PostPromotionAppliedParams) error
 	PostPromotionTable(ctx context.Context, arg PostPromotionTableParams) error
-	UpsertPaymentConfig(ctx context.Context, arg UpsertPaymentConfigParams) error
 }
 
 var _ Querier = (*Queries)(nil)

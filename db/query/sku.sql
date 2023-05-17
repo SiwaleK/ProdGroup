@@ -46,41 +46,32 @@ WHERE prodgroupid =$1;
 -- name: GetPaymentMethod :many 
 SELECT * FROM payment_method;
 
--- name: GetPaymentConfig :many 
+
+-- name: GetPosClientMethod :many
 SELECT
     pc.is_cash,
-    pc.is_qrcode,
     pc.is_paotang,
+    pc.is_qrcode,
     pc.is_tongfah,
     pc.is_coupon,
-    pc.printer_type,
     br.account_name,
     br.account_code
-
 FROM
-    posclient pc,
-    branch br
-   
-;
-
--- Add unique constraint to posclient table
-ALTER TABLE posclient
-ADD CONSTRAINT uq_posclient_unique_columns UNIQUE (is_cash, is_qrcode, is_paotang, is_tongfah, is_coupon, printer_type);
+    posclient pc
+JOIN
+    branch br ON pc.branch_id = br.branch_id
+WHERE
+    pc.pos_client_id = $1;
 
 
--- name: UpsertPaymentConfig :exec
-WITH upsert_data AS (
-    INSERT INTO posclient (is_cash, is_qrcode, is_paotang, is_tongfah, is_coupon, printer_type)
-    VALUES ($1, $2, $3, $4, $5, $6)
-    ON CONFLICT (pos_client_id)
-    DO UPDATE SET
-        is_cash = EXCLUDED.is_cash,
-        is_qrcode = EXCLUDED.is_qrcode,
-        is_paotang = EXCLUDED.is_paotang,
-        is_tongfah = EXCLUDED.is_tongfah,
-        is_coupon = EXCLUDED.is_coupon,
-        printer_type = EXCLUDED.printer_type
-    RETURNING pos_client_id
-)
-SELECT *
-FROM upsert_data;
+
+
+-- name: GetPaymentConfig :many 
+SELECT 
+  br.account_name,
+  br.account_code
+FROM
+  branch br;
+
+
+

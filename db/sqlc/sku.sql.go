@@ -13,28 +13,14 @@ import (
 )
 
 const getPaymentConfig = `-- name: GetPaymentConfig :many
-SELECT
-    pc.is_cash,
-    pc.is_qrcode,
-    pc.is_paotang,
-    pc.is_tongfah,
-    pc.is_coupon,
-    pc.printer_type,
-    br.account_name,
-    br.account_code
-
+SELECT 
+  br.account_name,
+  br.account_code
 FROM
-    posclient pc,
-    branch br
+  branch br
 `
 
 type GetPaymentConfigRow struct {
-	IsCash      interface{}    `json:"is_cash"`
-	IsQrcode    interface{}    `json:"is_qrcode"`
-	IsPaotang   interface{}    `json:"is_paotang"`
-	IsTongfah   interface{}    `json:"is_tongfah"`
-	IsCoupon    interface{}    `json:"is_coupon"`
-	PrinterType interface{}    `json:"printer_type"`
 	AccountName *string `json:"account_name"`
 	AccountCode *string `json:"account_code"`
 }
@@ -48,16 +34,7 @@ func (q *Queries) GetPaymentConfig(ctx context.Context) ([]GetPaymentConfigRow, 
 	items := []GetPaymentConfigRow{}
 	for rows.Next() {
 		var i GetPaymentConfigRow
-		if err := rows.Scan(
-			&i.IsCash,
-			&i.IsQrcode,
-			&i.IsPaotang,
-			&i.IsTongfah,
-			&i.IsCoupon,
-			&i.PrinterType,
-			&i.AccountName,
-			&i.AccountCode,
-		); err != nil {
+		if err := rows.Scan(&i.AccountName, &i.AccountCode); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -85,6 +62,64 @@ func (q *Queries) GetPaymentMethod(ctx context.Context) ([]PaymentMethod, error)
 	for rows.Next() {
 		var i PaymentMethod
 		if err := rows.Scan(&i.Paymentmethodid, &i.Paymentname); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getPosClientMethod = `-- name: GetPosClientMethod :many
+SELECT
+    pc.is_cash,
+    pc.is_paotang,
+    pc.is_qrcode,
+    pc.is_tongfah,
+    pc.is_coupon,
+    br.account_name,
+    br.account_code
+FROM
+    posclient pc
+JOIN
+    branch br ON pc.branch_id = br.branch_id
+WHERE
+    pc.pos_client_id = $1
+`
+
+type GetPosClientMethodRow struct {
+	IsCash      *int16  `json:"is_cash"`
+	IsPaotang   *int16  `json:"is_paotang"`
+	IsQrcode    *int16  `json:"is_qrcode"`
+	IsTongfah   *int16  `json:"is_tongfah"`
+	IsCoupon    *int16  `json:"is_coupon"`
+	AccountName *string `json:"account_name"`
+	AccountCode *string `json:"account_code"`
+}
+
+func (q *Queries) GetPosClientMethod(ctx context.Context, posClientID *string) ([]GetPosClientMethodRow, error) {
+	rows, err := q.db.QueryContext(ctx, getPosClientMethod, posClientID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetPosClientMethodRow{}
+	for rows.Next() {
+		var i GetPosClientMethodRow
+		if err := rows.Scan(
+			&i.IsCash,
+			&i.IsPaotang,
+			&i.IsQrcode,
+			&i.IsTongfah,
+			&i.IsCoupon,
+			&i.AccountName,
+			&i.AccountCode,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -332,45 +367,6 @@ func (q *Queries) PostPromotionTable(ctx context.Context, arg PostPromotionTable
 		arg.Enddate,
 		arg.Description,
 		arg.Condition,
-	)
-	return err
-}
-
-const upsertPaymentConfig = `-- name: UpsertPaymentConfig :exec
-WITH upsert_data AS (
-    INSERT INTO posclient (is_cash, is_qrcode, is_paotang, is_tongfah, is_coupon, printer_type)
-    VALUES ($1, $2, $3, $4, $5, $6)
-    ON CONFLICT (pos_client_id)
-    DO UPDATE SET
-        is_cash = EXCLUDED.is_cash,
-        is_qrcode = EXCLUDED.is_qrcode,
-        is_paotang = EXCLUDED.is_paotang,
-        is_tongfah = EXCLUDED.is_tongfah,
-        is_coupon = EXCLUDED.is_coupon,
-        printer_type = EXCLUDED.printer_type
-    RETURNING pos_client_id
-)
-SELECT pos_client_id
-FROM upsert_data
-`
-
-type UpsertPaymentConfigParams struct {
-	IsCash      interface{} `json:"is_cash"`
-	IsQrcode    interface{} `json:"is_qrcode"`
-	IsPaotang   interface{} `json:"is_paotang"`
-	IsTongfah   interface{} `json:"is_tongfah"`
-	IsCoupon    interface{} `json:"is_coupon"`
-	PrinterType interface{} `json:"printer_type"`
-}
-
-func (q *Queries) UpsertPaymentConfig(ctx context.Context, arg UpsertPaymentConfigParams) error {
-	_, err := q.db.ExecContext(ctx, upsertPaymentConfig,
-		arg.IsCash,
-		arg.IsQrcode,
-		arg.IsPaotang,
-		arg.IsTongfah,
-		arg.IsCoupon,
-		arg.PrinterType,
 	)
 	return err
 }
