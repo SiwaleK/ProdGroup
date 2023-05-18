@@ -1,0 +1,14 @@
+version: '3'
+
+silent: true
+
+tasks:
+  generate-schema:
+    desc: Generate db schema from dbml
+    cmds:
+      - dbml2sql db/sql/schema.dbml --postgres -o db/sql/schema.sql
+  
+  generate-code:
+    desc: Generate code from sql with Sqlc
+    cmds:
+      - docker container run --rm -v $(pwd):/src -w /src kjconroy/sqlc generate

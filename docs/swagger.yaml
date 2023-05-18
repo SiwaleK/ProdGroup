@@ -1,0 +1,3334 @@
+swagger: '2.0'
+info:
+  version: '1.0.0'
+  title: MockUp API
+
+tags:
+  - name: AddressMasterData
+  - name: Banner
+  - name: Branch
+  - name: Brand
+  - name: Coupon
+  - name: Customer
+  - name: Favorite
+  - name: FullTax
+  - name: InventoryConfig
+  - name: Notification
+  - name: PaymentConfig
+  - name: PaymentMethod
+  - name: POSClient
+  - name: ProductCat
+  - name: ProductGroup
+  - name: ProductUnit
+  - name: ProductSize
+  - name: Promotion
+  - name: SaleOrder
+  - name: SHIFT
+  - name: SKU
+
+schemes: [sale]
+
+
+paths:
+
+  /sale/api/v1/AddressMasterData/Zippcode:
+    get:
+      tags:
+        - AddressMasterData
+      summary: Get Zipcode List
+      produces:
+        - text/plain
+      operationId: addressMasterData
+      parameters: []
+      responses:
+        401:
+          description: Unauthorized
+        200:
+          description: Success
+          schema:
+              $ref: '#/definitions/Zipcode'
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+ 
+  /sale/api/v1/AddressMasterData/Province:
+    get:
+      tags:
+        - AddressMasterData
+      summary: Get All Province List
+      produces:
+        - text/plain
+      operationId: getProvince
+      parameters: []
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/Provinces"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+
+  /sale/api/v1/AddressMasterData/Address:
+    get:
+      tags:
+        - AddressMasterData
+      summary: Get Subdistrict List by Zipcode
+      produces:
+        - text/plain
+      operationId: getSubdistrict
+      parameters:
+        - name: zipcode
+          in: query
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/Address"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+            
+  /sale/api/v1/AddressMasterData/District:
+    get:
+      tags:
+        - AddressMasterData
+      summary: Get District by Province Name
+      produces:
+        - text/plain
+      operationId: getDistrict
+      parameters:
+        - name: provinceName
+          in: query
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/District"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+            
+  /sale/api/v1/AddressMasterData/SubDistrict/{districtId}:
+    get:
+      tags:
+        - AddressMasterData
+      summary: Get District by District ID
+      produces:
+        - text/plain
+      operationId: getDistrictById
+      parameters:
+        - name: districtId
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/Subdistrict"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+  
+  /sale/api/v1/AddressMasterData/District/{provinceId}:
+    get:
+      tags:
+        - AddressMasterData
+      summary: Get District by Province ID
+      produces:
+        - text/plain
+      operationId: getDistrictByProId
+      parameters:
+        - name: provinceId
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/District"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+  /sale/api/v1/AddressMasterData/Province/{provinceId}:
+    get:
+      tags:
+        - AddressMasterData
+      summary: Get Province by Province ID
+      produces:
+        - text/plain
+      operationId: getProvinceByProId
+      parameters:
+        - name: provinceId
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/Province"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+            
+  /sale/api/v1/Banner:
+    get:
+      tags:
+        - Banner
+      summary: Get Banner
+      produces:
+        - text/plain
+      operationId: getBanner
+      parameters: []
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/Banner"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+    post:
+      tags:
+        - Banner
+      summary: Post Banner
+      operationId: postBanner
+      parameters: 
+        - name: Request Body
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/BannerRe"
+          
+      produces:
+        - text/plain
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+
+  /sale/api/v1/Banner/WebAdmin:
+    get:
+      tags:
+        - Banner
+      summary: Get Banner
+      produces:
+        - text/plain
+      operationId: getBanner
+      parameters:
+          - name: startdate
+            in: query
+            type: string
+          - name: enddate
+            in: query
+            type: string
+
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/BannerForAdmin"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+  /sale/api/v1/Branch:
+    get:
+      tags:
+        - Branch
+      summary: Get All Branch ของร้านที่เจ้าของ POSClient ที่ใช้งานอยู่
+      produces:
+        - text/plain
+      operationId: getBranch
+      parameters: []
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/Branch"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+  /sale/api/v1/Branch/Detail:
+    get:
+      tags:
+        - Branch
+      summary: Get Branch Detail
+      produces:
+        - text/plain
+      operationId: getBranchDetail
+      parameters: []
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/BranchDetails"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+    post:
+      tags:
+        - Branch
+      summary: Upsert Branch Detail
+      operationId: postBranch
+      parameters: 
+        - name: Request Body
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/BranchDetails"
+          
+      produces:
+        - text/plain
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/BranchDetails"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+            
+  /sale/api/v1/Brand:
+    get:
+      tags:
+        - Brand
+      summary: Get All Brand
+      produces:
+        - text/plain
+      operationId: getBrand
+      parameters: []
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/Brand"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+    post:
+      tags:
+        - Brand
+      summary: Upsert Brand (ถ้า insert ใส่ BrandID = null)
+      operationId: postBrand
+      parameters: 
+        - name: Request Body
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Brand/properties/items/items"
+          
+      produces:
+        - text/plain
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/Brand/properties/items/items"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+            
+  /sale/api/v1/Coupon/{couponid}:
+    get:
+      tags:
+        - Coupon
+      summary: Get Coupon by ID
+      produces:
+        - text/plain
+      operationId: getCoupon
+      parameters:
+          - name: couponid
+            in: path
+            required: true
+            type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/Coupon"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+            
+  /sale/api/v1/Customer/Detail:
+    get:
+      tags:
+        - Customer
+      summary: Get Customer by TaxId
+      produces:
+        - text/plain
+      operationId: getCustomer
+      parameters:
+          - name: taxId
+            in: query
+            type: string
+          - name: customerType
+            in: query
+            type: integer
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/Customer"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+  /sale/api/v1/Customer:       
+    post:
+      tags:
+        - Customer
+      summary: Create Customer
+      operationId: postCustomer
+      parameters: 
+        - name: Request Body
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/CustomerRequest"
+          
+      produces:
+        - text/plain
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+            
+  /sale/api/v1/Favorite:
+    get:
+      tags:
+        - Favorite
+      summary: Get Favorite List
+      produces:
+        - text/plain
+      operationId: getFavorite
+      parameters: []
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/Favorite"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+            
+    post:
+      tags:
+        - Favorite
+      summary: Upsert Favorite
+      operationId: postFavorite
+      parameters: 
+        - name: Request Body
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Favorite"
+          
+      produces:
+        - text/plain
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+            
+  /sale/api/v1/FullTax/{saleorderid}:
+    get:
+      tags:
+        - FullTax
+      summary: Get List FullTax by SaleOrderID
+      produces:
+        - text/plain
+      operationId: getFullTax
+      parameters:
+          - name: saleorderid
+            in: path
+            required: true
+            type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/FullTax"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+  /sale/api/v1/FullTax:     
+    post:
+      tags:
+        - FullTax
+      summary: Create FullTax 
+      operationId: postFullTax
+      parameters: 
+        - name: Request Body
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/FullTaxRequest"
+          
+      produces:
+        - text/plain
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+            
+  /sale/api/v1/InventoryConfig:
+    get:
+      tags:
+        - InventoryConfig
+      summary: Get Inventory Config
+      produces:
+        - text/plain
+      operationId: getInventoryConfig
+      parameters: []
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/InventoryConfig"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+            
+    post:
+      tags:
+        - InventoryConfig
+      summary: Upsert Inventory Config
+      operationId: postInventoryConfig
+      parameters: 
+        - name: Request Body
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/InventoryConfig/items"
+          
+      produces:
+        - text/plain
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/InventoryConfig/items"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+            
+  /sale/api/v1/Notification:
+    get:
+      tags:
+        - Notification
+      summary: Get Notification
+      produces:
+        - text/plain
+      operationId: getNotification
+      parameters: []
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/Notification"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+            
+    post:
+      tags:
+        - Notification
+      summary: Post Notification
+      operationId: postNotification
+      parameters: 
+        - name: Request Body
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/NotificationRequest"
+          
+      produces:
+        - text/plain
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+
+  /sale/appi/v1/Notification/WebAdmin:
+    get:
+      tags:
+        - Notification
+      summary: Get Notification for Web Admin
+      produces:
+        - text/plain
+      operationId: getNotification
+      parameters:
+          - name: startdate
+            in: query
+            type: string
+          - name: enddate
+            in: query
+            type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/NotificationForAdmin"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+
+  /sale/api/v1/PatmentConfig:
+    get:
+      tags:
+        - PaymentConfig
+      summary: Get Payment Config
+      produces:
+        - text/plain
+      operationId: getPaymentConfig
+      parameters: []
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/PaymentConfig"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+            
+    post:
+      tags:
+        - PaymentConfig
+      summary: Set Payment Config
+      operationId: postPaymaentConfig
+      parameters: 
+        - name: Request Body
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/PaymentConfigRequest"
+      produces:
+        - text/plain
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/PaymentConfigRequest"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+            
+  /sale/api/v1/PatmentMethod:
+    get:
+      tags:
+        - PaymentMethod
+      summary: Get Payment Method
+      produces:
+        - text/plain
+      operationId: getPaymentMethod
+      parameters: []
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/PaymentMethod"
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+            
+  /sale/api/v1/POSClient/POSRunning:
+    patch:
+      tags:
+        - POSClient
+      summary: Update POSRunning ของ POSClient ที่ใช้งานอยู่
+      produces:
+        - text/plain
+      operationId: updatePOSRunning
+      parameters: 
+        - name: Request Body
+          in: body
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+  /sale/api/v1/POSClient/POSRunningFR:           
+    patch:
+      tags:
+        - POSClient
+      summary: Update POSRunning ของ POSClient ที่ใช้งานอยู่
+      produces:
+        - text/plain
+      operationId: updatePOSRinningFR
+      parameters: 
+        - name: Request Body
+          in: body
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+        401:
+          description:  Unauthorized
+        500:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/FailedResult"
+         
+  /sale/api/v1/ProductCat/:
+    get:
+      tags: 
+        - ProductCat
+      summary: ดึง ProductCat ทุกรายการและ SKU ที่อยู่ใน ProductCat
+      description: ดึง ProductCat ทุกรายการและ SKU ที่อยู่ใน ProductCat นั้น **ไม่ได้แยกตามอะไรเลย**
+      parameters:
+
+      responses:
+        200:
+          description:  ดึง ProductCat ทุกรายการและ SKU ที่อยู่ใน ProductCat สำเร็จ (ทำการเก็บ log)
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/ProductCat'
+
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/ProductCat/{productcatid}/:
+    get:
+      tags: 
+        - ProductCat
+      summary: ดึง ProductCat ที่ระบุ 1 รายการ
+      description: ดึง ProductCat ที่ระบุ 1 รายการ
+      parameters:
+        - name: productcatid
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: SkuList
+      responses:
+        200:
+          description:  ดึง ProductCat ที่ระบุ 1 รายการ สำเร็จ (ทำการเก็บ log)
+          schema:
+            $ref: '#/definitions/ProductCat'
+
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/ProductCat/ProductSubCat:
+    get:
+      tags: 
+        - ProductCat
+      summary:  ดึง ProductCat ทุกรายการและ ProductSubCat ที่อยู่ใน ProductCat 
+      description: ดึง ProductCat ทุกรายการและ ProductSubCat ที่อยู่ใน ProductCat นั้น **ไม่ได้แยกตามอะไรเลย**
+      parameters:
+
+      responses:
+        200:
+          description:  ดึง ProductCat ทุกรายการและ ProductSubCat ที่อยู่ใน ProductCat นั้น **ไม่ได้แยกตามอะไรเลย** สำเร็จ (ทำการเก็บ log)
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/ProductSubCat'
+
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/ProductCat/ProductSubCat/{productcatid}:
+    get:
+      tags: 
+        - ProductCat
+      summary: ดึง ProductCat และ ProductSubCat ที่ระบุ
+      description: ดึง ProductCat และ ProductSubCat ที่ระบุ
+      parameters:
+        - name: productcatid
+          in: path
+          required: true
+          schema:
+            type: string
+            
+      operationId: SkuList
+      responses:
+        200:
+          description:  ดึง ProductCat และ ProductSubCat ที่ระบุสำเร็จ (ทำการเก็บ log)
+          schema:
+            $ref: '#/definitions/ProductSubCat'
+
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+  /sale/api/v1/ProductGroup/:
+    get:
+      tags: 
+        - ProductGroup
+      summary: Get Product Group
+      description: Get Product Group
+      parameters:
+
+      responses:
+        200:
+          description:  Get Product Group สำเร็จ (ทำการเก็บ log)
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/ProductGroup'
+
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/ProductGroup{productgroupid}/:
+    get:
+      tags: 
+        - ProductGroup
+      summary: ดึง ProductGroup ที่ระบุ 1 รายการ 
+      description: ดึง ProductGroup ที่ระบุ 1 รายการ 
+      parameters:
+        - name: productgroupid
+          in: path
+          required: true
+          schema:
+            type: string
+            
+      responses:
+        200:
+          description:   ดึง ProductGroup ที่ระบุ 1 รายการ สำเร็จ (ทำการเก็บ log)
+          schema:
+            $ref: '#/definitions/ProductGroup'
+
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/ProdictUnit/:
+    get:
+      tags: 
+        - ProductUnit
+      summary: Get Product Unit
+      description: Get Product Unit
+      parameters:
+
+      responses:
+        200:
+          description:  Get Product Unit สำเร็จ (ทำการเก็บ log)
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  properties:
+                    productUnitID:
+                      type: number
+                    name:
+                      type: string
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/ProductSize/:
+    get:
+      tags: 
+        - ProductSize
+      summary: Get Product size
+      description: Get Product size
+      parameters:
+
+      responses:
+        200:
+          description:  Get Product size สำเร็จ (ทำการเก็บ log)
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  properties:
+                    productSizeID:
+                      type: number
+                    name:
+                      type: string
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/Promotion/DiscountPerItem:
+    post:
+      tags: 
+        - Promotion
+      summary: Create Promotion Discount Per Item
+      description: Create Promotion Discount Per Item
+      parameters:
+        - name: Request body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Promotion'
+
+      responses:
+        200:
+          description: Create Promotion Discount Per Item สำเร็จ (ทำการเก็บ log)
+          schema:
+            $ref: '#/definitions/EmptySchema'
+              
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/Promotion/AFreeB:
+    post:
+      tags: 
+        - Promotion
+      summary: Create Promotion A Free B
+      description: Create Promotion A Free B
+      parameters:
+        - name: Request body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+              text:
+                type: string
+              startDate:
+                type: string
+                format: date-time
+              endDate:
+                type: string
+                format: date-time
+              condition:
+                type: object
+                properties:
+                  minimumAmountToEnable:
+                    type: integer
+                  freeAmount:
+                    type: integer
+                  premiumItemsId:
+                    type: array
+                  items:
+                    type: string
+                additionalProperties: false
+              appliedItemsId:
+                type: array
+                items:
+                  type: string
+          additionalProperties: false
+
+      responses:
+        200:
+          description: Create Promotion A Free B สำเร็จ (ทำการเก็บ log)
+          schema:
+            $ref: '#/definitions/EmptySchema'
+              
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/Promotion/StepPerchase:
+    post:
+      tags: 
+        - Promotion
+      summary: Create Promotion Step Purchase
+      description: Create Promotion Step Purchase
+      parameters:
+        - name: Request body
+          in: body
+          required: true
+          type: object
+          properties:
+            id:
+              type: string
+            text:
+              type: string
+            startDate:
+              type: string
+              format: date-time
+            endDate:
+              type: string
+              format: date-time
+            condition:
+              type: object
+              properties:
+                specialPriceAtXItemConditionDetail:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      minimumItemToEnable:
+                        type: integer
+                      discount:
+                        type: integer
+              required:
+                - specialPriceAtXItemConditionDetail
+            appliedItemsId:
+              type: array
+              items:
+                type: string
+
+      responses:
+        200:
+          description: Create Promotion Step Purchase สำเร็จ (ทำการเก็บ log)
+          schema:
+            $ref: '#/definitions/EmptySchema'
+              
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/Promotion/FreePremium:
+    post:
+      tags: 
+        - Promotion
+      summary: Create Promotion Free Premium
+      description: Create Promotion Free Premium
+      parameters:
+        - name: Request body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+              text:
+                type: string
+              startDate:
+                type: string
+                format: date-time
+              endDate:
+                type: string
+                format: date-time
+              condition:
+                type: object
+                properties:
+                  minimumAmountToEnable:
+                    type: integer
+                  freeAmount:
+                    type: integer
+                  premiumItemsId:
+                    type: array
+                  items:
+                    type: string
+                additionalProperties: false
+              appliedItemsId:
+                type: array
+                items:
+                  type: string
+          additionalProperties: false
+      responses:
+        200:
+          description: Create Promotion Discount Per Item สำเร็จ (ทำการเก็บ log)
+          schema:
+            $ref: '#/definitions/EmptySchema'
+              
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log) 
+  /sale/api/v1/SaleOrder:
+    get:
+      tags: 
+        - SaleOrder
+      summary: ดึง SaleOrder ทุกรายการใน POSClient 
+      description: ดึง SaleOrder ทุกรายการใน POSClient (SaleItem ที่โดน Void ก็เอามาด้วย)
+      parameters:
+
+      responses:
+        200:
+          description: ดึง SaleOrder ทุกรายการใน POSClient สำเร็จ (ทำการเก็บ log)
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  type: object
+                  properties:
+                  $ref: '#/definitions/SaleOrderFullTax'
+
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+    post:
+      tags: 
+        - SaleOrder
+      summary: Upsert SaleOrder 1 รายการ
+      description: Upsert SaleOrder 1 รายการ
+      parameters:
+        - name: SaleOrder
+          in: body
+          description: 'Global SKU ใส่ merchantID เป็น null, Local SKU กำหนด merchantID'
+          required: true
+          schema:
+            type: object
+            properties:
+            $ref: '#/definitions/SaleOrder'
+       
+      responses:
+        200:
+          description: Upsert SaleOrder 1 รายการสำเร็จ (ทำการเก็บ log)
+          schema:
+            type: object
+            properties:
+              
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/SaleOrder/{saleorderid}:
+    get:
+      tags: 
+        - SaleOrder
+      summary: ดึง SaleOrder ที่ระบุ 1 รายการ, สามารถดึงรายการที่โดน void ทิ้งแล้วได้
+      description: ดึง SaleOrder ที่ระบุ 1 รายการ, สามารถดึงรายการที่โดน void ทิ้งแล้วได้
+      parameters:
+        - name: SaleOrderID
+          in: path
+          description: ID ของ Sale order
+          required: true
+          schema:
+            type: string
+
+      responses:
+        200:
+          description: Upsert SaleOrder 1 รายการสำเร็จ (ทำการเก็บ log)
+          schema:
+            type: object
+            properties:
+            $ref: '#/definitions/SaleOrderFullTax'
+              
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+    put:
+      tags: 
+        - SaleOrder
+      summary: Void SaleOrder 1 รายการ
+      description: Void SaleOrder 1 รายการ เปลี่ยน สถานะ isActive เป็น false
+      parameters:
+        - name: SaleOrderID
+          in: path
+          description: ID ของ Sale order
+          required: true
+          schema:
+            type: string
+
+      responses:
+        200:
+          description: Void Update isActive เป็น false SaleOrder 1 รายการสำเร็จ (ทำการเก็บ log)
+          schema:
+            type: object
+            properties:
+              
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/SaleOrder/Bydate:
+    get:
+      tags: 
+        - SaleOrder
+      summary: ดึง SaleOrder ทุกรายการใน POSClient ระหว่างวันที่
+      description: ดึง SaleOrder ทุกรายการใน POSClient ระหว่างวันที่กำหนด
+      parameters:
+        - name: startdate
+          in: path
+          description: start date ของ Sale order
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: enddate
+          in: path
+          description: end date ของ Sale order
+          required: true
+          schema:
+            type: string
+            format: date-time
+
+      responses:
+        200:
+          description: ดึง SaleOrder ทุกรายการใน POSClient ระหว่างวันที่กำหนดสำเร็จ (ทำการเก็บ log)
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  type: object
+                  properties:
+                  $ref: '#/definitions/SaleOrderFullTax'
+              
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+
+  /sale/api/v1/Shift:
+    get:
+      tags: 
+        - SHIFT
+      summary: ดึงกะทุกรายการของ POSclient ที่ใช้งานอยู่
+      description: ดึงกะทุกรายการของ POSclient ที่ใช้งานอยู่
+      parameter:
+
+      responses:
+        200:
+          description: ดึงกะทุกรายการของ POSclient ที่ใช้งานอยู่สำเร็จ
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  type: array
+                  $ref: '#/definitions/PosSession'
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/Shift/History:
+    get:
+      tags: 
+        - SHIFT
+      summary:  ดึงประวัติกะของ POSClient ที่ใช้งานอยู่
+      description:  ดึงประวัติกะ (ย้อนหลังได้ไม่เกิน 7 วัน) ของ POSClient ที่ใช้งานอยู่
+      parameter:
+
+      responses:
+        200:
+          description: ดึงประวัติกะ (ย้อนหลังได้ไม่เกิน 7 วัน) ของ POSClient ที่ใช้งานอยู่สำเร็จ
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  type: array
+                  $ref: '#/definitions/Session'
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/Shift/Open:
+    get:
+      tags: 
+        - SHIFT
+      summary: ดึงกะปัจจุบันของ POSClient ที่ใช้งานอยู่
+      description: ดึงกะปัจจุบันของ POSClient ที่ใช้งานอยู่
+      parameter:
+
+      responses:
+        200:
+          description: ดึงกะปัจจุบันของ POSClient ที่ใช้งานอยู่สำเร็จ
+          schema:
+            type: object
+            properties:
+            $ref: '#/definitions/PosSession'
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+    post:
+      tags: 
+        - SHIFT
+      summary: เปิดกะ ให้ใส่จำนวนเงินในชิ้นชักด้วย
+      description: เปิดกะ ให้ใส่จำนวนเงินในชิ้นชักด้วย
+      parameter:
+
+      responses:
+        200:
+          description: เปิดกะ ให้ใส่จำนวนเงินในชิ้นชักด้วยสำเร็จ
+          schema:
+            type: object
+            properties:
+              shiftID:
+                type: string
+              startDate:
+                type: string
+                format: date-time
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/Shift/Close:
+    post:
+      tags: 
+        - SHIFT
+      summary: ปิดกะ ให้ใส่จำนวนเงินในชิ้นชักด้วย
+      description: ปิดกะ ให้ใส่จำนวนเงินในชิ้นชักด้วย
+      parameter:
+
+      responses:
+        200:
+          description: ปิดกะ ให้ใส่จำนวนเงินในชิ้นชักด้วยสำเร็จ
+          schema:
+            type: object
+            properties:
+              shiftID:
+                type: string
+              startDate:
+                type: string
+                format: date-time
+              endDate:
+                type: string
+                format: date-time
+              summary:
+                type: number
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/Shift/SessionConfig:
+    get:
+      tags: 
+        - SHIFT
+      summary: Get Session Type
+      description: Get Session Type
+      parameter:
+
+      responses:
+        200:
+          description: ดึงรายการ Session Type สำเร็จ
+          schema:
+            type: object
+            properties:
+              seesionType:
+                type: number
+
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/Shift/SessionConfg:
+    post:
+      tags: 
+        - SHIFT
+      summary: Upsert Session Type
+      description: Upsert Session Type
+      parameter:
+
+      responses:
+        200:
+          description: Upsert รายการ Session Type สำเร็จ
+          schema:
+            type: object
+            properties:
+              seesionType:
+                type: number
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+
+  /sale/api/v1/SKU:
+    get:
+      tags: 
+        - SKU
+      summary: ดึงรายการ SKU และ Price  (Global SKU + Local SKU)
+      description: ดึงรายการ SKU และ Price ของสาขาปัจจุบันที่ POSClient สังกัดอยู่, ต้องตั้งราคาใน sku_branch_price แล้ว (Global SKU + Local SKU)
+      parameters:
+        - name: posClientID
+          in: path
+          description: ID ของเครื่อง POS
+          required: true
+          schema:
+            type: string
+      operationId: SkuList
+      responses:
+        200:
+          description: ดึงรายการ SKU และ Price ของสาขาปัจจุบันที่ POSClient สังกัดอยู่, ต้องตั้งราคาใน sku_branch_price แล้ว (Global SKU + Local SKU) สำเร็จ
+          schema:
+            type: object
+            properties:
+              total:
+                type: integer
+                description: จำนวนสินค้าทั้งหมด
+              items:
+                type: array
+                items:
+                  type: array
+                  $ref: '#/definitions/ProductItems'
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+    post:
+      tags: 
+        - SKU
+      summary: Upsert SKU
+      description: Upsert SKU ต้องใส่ทุกอย่างเอง (Global SKU ใส่ merchantID เป็น null, Local SKU กำหนด merchantID)
+      parameters:
+        - name: Request body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+            $ref: '#/definitions/Sku'
+
+      responses:
+        200:
+          description: Upsert SKU ต้องใส่ทุกอย่างเอง (Global SKU ใส่ merchantID เป็น null, Local SKU กำหนด merchantID)
+          schema:
+            $ref: '#/definitions/EmptySchema'
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/SKU/Local:
+    get:
+      tags: 
+        - SKU
+      summary:  ดึงเฉพาะ Local SKU, ต้องตั้งราคาใน sku_branch_price แล้ว
+      description: ดึงเฉพาะ Local SKU, ต้องตั้งราคาใน sku_branch_price แล้ว
+      parameters:
+        - name: posClientID
+          in: path
+          description: ID ของเครื่อง POS
+          required: true
+          schema:
+            type: string
+      operationId: SkuList
+      responses:
+        200:
+          description: ดึงรายการ SKU และ Price  (Global SKU + Local SKU) สำเร็จ
+          schema:
+            type: object
+            properties:
+              total:
+                type: integer
+                description: จำนวนสินค้าทั้งหมด
+              items:
+                type: array
+                items:
+                  type: array
+                  $ref: '#/definitions/ProductItems'
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/SKU/{:skuid}:
+    get:
+      tags: 
+        - SKU
+      summary: ดึงรายการ SKU และ Price 1 รายการ ของสาขาปัจจุบันที่ POSClient สังกัดอยู่
+      description: ดึงรายการ SKU และ Price 1 รายการ ของสาขาปัจจุบันที่ POSClient สังกัดอยู่
+      parameters:
+        - name: posClientID
+          in: path
+          description: ID ของเครื่อง POS
+          required: true
+          schema:
+            type: string
+        - name: skuid
+          in: path
+          description: id ของ sku
+          required: true
+          schema:
+            type: string
+      operationId: SkuList
+      responses:
+        200:
+          description: รายการของ SKU local และ global
+          schema:
+            type: object
+            $ref: '#/definitions/ProductItems'
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+    put:
+      tags: 
+        - SKU
+      summary: void SKU
+      description: อัปเดทค่าสถานะ SKU และ Price  (Global SKU + Local SKU) 1 รายการจาก skuid
+      operationId: SkuList
+      parameters:
+        - name: posClientID
+          in: path
+          description: ID ของเครื่อง POS
+          required: true
+          schema:
+            type: string
+        - name: skuid
+          in: path
+          description: id ของ sku
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: อัปเดทค่าสถานะ SKU และ Price  (Global SKU + Local SKU) 1 รายการจาก skuid สำเร็จ
+          schema:
+            $ref: '#/definitions/EmptySchema'
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/SKU/BranchPrice:
+    post:
+      tags: 
+        - SKU
+      summary: แก้ราคาของ SKU Branch
+      description: Upsert แก้ราคาของแต่ละ SKU ของสาขาปัจจุบันที่ POSClient สังกัดอยู่, Upsert รายการใน sku_branch_price
+      operationId: SkuList
+      parameters:
+        - name: Request body
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                sku: 
+                  type: string
+                price:
+                  type: number
+
+
+      responses:
+        200:
+          description: Upsert แก้ราคาของแต่ละ SKU ของสาขาปัจจุบันที่ POSClient สังกัดอยู่, Upsert รายการใน sku_branch_price สำเร็จ
+          schema:
+            $ref: '#/definitions/EmptySchema'
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/SKU/BranchPrice/{skuid}:
+    put:
+      tags: 
+        - SKU
+      summary: void SKU_branch_price
+      description: Void รายการสินค้าออกจาก sku_branch_price
+      operationId: SkuList
+      parameters:
+        - name: posClientID
+          in: path
+          description: ID ของเครื่อง POS
+          required: true
+          schema:
+            type: string
+        - name: skuid
+          in: path
+          description: id ของ sku
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Void รายการสินค้าออกจาก sku_branch_price
+          schema:
+            $ref: '#/definitions/EmptySchema'
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+          
+  /sale/api/v1/SKU/LookUp:
+    get:
+      tags: 
+        - SKU
+      summary: Lookup ด้วย Barcode/ProductName
+      description: Lookup ด้วย Barcode/ProductName แยกตาม Merchant/Branch (Global SKU + Local SKU)
+      operationId: SkuList
+      parameters:
+        - name: posClientID
+          in: path
+          description: ID ของเครื่อง POS
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Lookup ด้วย Barcode/ProductName แยกตาม Merchant/Branch (Global SKU + Local SKU)
+          schema:
+            type: object
+            properties:
+              additionalProp1:
+                $ref: '#/definitions/additionalProp'
+              additionalProp2:
+                $ref: '#/definitions/additionalProp'
+              additionalProp3:
+                $ref: '#/definitions/additionalProp'
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/SKU/LookeUp/barcodePOS:
+    get:
+      tags: 
+        - SKU
+      summary: ดึงรายการ Barcode และข้อมูล SKU ทั้งหมด แยกตาม Merchant/Branch
+      description: ดึงรายการ Barcode และข้อมูล SKU ทั้งหมด แยกตาม Merchant/Branch (Global SKU + Local SKU)
+      operationId: SkuList
+      parameters:
+        - name: posClientID
+          in: path
+          description: ID ของเครื่อง POS
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: ดึงรายการ Barcode และข้อมูล SKU ทั้งหมด แยกตาม Merchant/Branch (Global SKU + Local SKU)
+          schema:
+            type: object
+            properties:
+              additionalProp1:
+                $ref: '#/definitions/additionalProp'
+              additionalProp2:
+                $ref: '#/definitions/additionalProp'
+              additionalProp3:
+                $ref: '#/definitions/additionalProp'
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+  /sale/api/v1/SKU/LookeUp/barcodePOS/{barcodepos}:
+    get:
+      tags: 
+        - SKU
+      summary: ดึงรายการ Barcode และข้อมูล SKU 1 รายการ
+      description: ดึงรายการ Barcode และข้อมูล SKU 1 รายการ
+      operationId: SkuList
+      parameters:
+        - name: posClientID
+          in: path
+          description: ID ของเครื่อง POS
+          required: true
+          schema:
+            type: string
+        - name: barcodepos
+          in: path
+          description: barcode ของเครื่อง POS
+          required: true
+          schema:
+            type: string
+
+      responses:
+        200:
+          description: ดึงรายการ Barcode และข้อมูล SKU 1 รายการ
+          schema:
+            type: object
+            properties:
+              additionalProp1:
+                $ref: '#/definitions/additionalProp'
+              additionalProp2:
+                $ref: '#/definitions/additionalProp'
+              additionalProp3:
+                $ref: '#/definitions/additionalProp'
+        401:
+          description: 401 Unauthorized
+        400:
+          description: 400 Bad Request
+        404:
+          description: 404 Not Found
+          schema:
+        500:
+          schema:
+            $ref: '#/definitions/ErrorResult'
+          description: 500 Server Error (ทำการเก็บ log)
+
+definitions:
+  ProductItems:
+    type: object
+    properties:
+      skuid:
+        type: string
+        description: The unique identifier of the product
+      barcodePOS:
+        type: string
+        description: The barcode of the product in the point-of-sale system
+      productName:
+        type: string
+        description: The name of the product
+      brandID:
+        type: integer
+        description: The ID of the brand that the product belongs to
+      productGroupID:
+        type: integer
+        description: The ID of the product group that the product belongs to
+      productCatID:
+        type: integer
+        description: The ID of the product category that the product belongs to
+      productSubCatID:
+        type: integer
+        description: The ID of the product subcategory that the product belongs to
+      productSizeID:
+        type: integer
+        description: The ID of the product size that the product belongs to
+      productUnit:
+        type: integer
+        description: The unit of the product
+      packSize:
+        type: string
+        description: The pack size of the product
+      unit:
+        type: integer
+        description: The unit of the product
+      banForPracharat:
+        type: integer
+        description: Whether the product is eligible for a government subsidy program
+      isVat:
+        type: boolean
+        description: Whether the product is subject to value-added tax
+      isFixPrice:
+        type: boolean
+        description: Whether the product has a fixed price
+      createBy:
+        type: string
+        description: The username of the user who created the product
+      createDate:
+        type: string
+        format: date-time
+        description: The date and time when the product was created
+      price:
+        type: integer
+        description: The price of the product
+      startDate:
+        type: string
+        format: date-time
+        description: The start date of the product's availability
+      endDate:
+        type: string
+        format: date-time
+        description: The end date of the product's availability
+      merchantID:
+        type: string
+        description: The ID of the merchant that sells the product
+
+  additionalProp:
+    type: object
+    properties:
+      sku:
+        type: string
+        description: The unique identifier for the SKU associated with this additional property.
+      title:
+        type: string
+        description: The title or name of this additional property.
+      price:
+        type: number
+        description: The price associated with this additional property.
+      updateStatus:
+        type: boolean
+        description: A flag indicating whether the status of this additional property has been updated.
+      blueFlag:
+        type: boolean
+        description: A flag indicating whether this additional property is marked with a blue flag.
+      isFixPrice:
+        type: boolean
+        description: A flag indicating whether the price of this additional property is fixed or not.
+      isVat:
+        type: boolean
+        description: A flag indicating whether this additional property is subject to VAT.
+      promotion:
+        type: object
+        description: Information about any promotions associated with this additional property.
+
+  PosSession:
+    type: object
+    properties:
+      posSessionID:
+        type: string
+        description: The unique identifier for the POS session.
+      posClientID:
+        type: string
+        description: The unique identifier for the POS Client.
+      startDate:
+        type: string
+        format: date-time
+        description: The start date of the POS session's availability.
+      endDate:
+        type: string
+        format: date-time
+        description: The end date of the POS session's availability.
+      cashAmount:
+        type: number
+        description: The amount of cash .
+      b500:
+        type: integer
+      b1000:
+        type: integer
+      b100:
+        type: integer
+      b50:
+        type: integer
+      b20:
+        type: integer
+      c10:
+        type: integer
+      c5:
+        type: integer
+      c2:
+        type: integer
+      c1:
+        type: integer
+      c050:
+        type: integer
+      c025:
+        type: integer
+      deposit:
+        type: number
+      withdrawal:
+        type: number
+      endCashAmount:
+        type: number
+      endB500:
+        type: integer
+      endB1000:
+        type: integer
+      endB100:
+        type: integer
+      endB50:
+        type: integer
+      endB20:
+        type: integer
+      endC10:
+        type: integer
+      endC5:
+        type: integer
+      endC2:
+        type: integer
+      endC1:
+        type: integer
+      endC050:
+        type: integer
+      endC025:
+        type: integer
+      createBy:
+        type: string
+      createDate:
+        type: string
+        format: date-time
+
+  Session:
+    type: object
+    properties:
+      posSessionID:
+        type: string
+        description: Unique identifier for the POS session.
+      startDate:
+        type: string
+        format: date-time
+        description: The date and time when the POS session started.
+      endDate:
+        type: string
+        format: date-time
+        description: The date and time when the POS session ended.
+      openDate:
+        type: string
+        format: date-time
+        description: The date and time when the cash drawer was opened for the session.
+      initialCash:
+        type: integer
+        description: The amount of cash in the drawer at the beginning of the session.
+      cashIncome:
+        type: integer
+        description: The total amount of cash received during the session.
+      refund:
+        type: integer
+        description: The total amount of refunds given during the session.
+      deposit:
+        type: integer
+        description: The total amount of cash deposited during the session.
+      withdrawal:
+        type: integer
+        description: The total amount of cash withdrawn during the session.
+      endCashAmount:
+        type: integer
+        description: The amount of cash in the drawer at the end of the session.
+      currentCash:
+        type: integer
+        description: The current amount of cash in the drawer (i.e., after all transactions have been processed).
+      shiftStatus:
+        type: string
+        description: The status of the POS shift (e.g., open, closed).
+      saleOrderCount:
+        type: integer
+        description: The total number of sale orders processed during the session.
+
+  Sku:
+    type: object
+    properties:
+      skuid: 
+        type: string
+        description: The unique identifier for the SKU.
+      barcodePOS:
+        type: string
+        description: The barcode number of POS associated with the SKU.
+      brandID:
+        type: integer
+        description: The unique identifier for the brand associated with the SKU.
+      productGroupID:
+        type: integer
+        description: The unique identifier for the product group associated with the SKU.
+      productSubCatID:
+        type: integer
+        description: The unique identifier for the product subcategory associated with the SKU.
+      productSizeID:
+        type: integer
+        description: The unique identifier for the product size associated with the SKU.
+      productUnit:
+        type: integer
+        description: The unique identifier for the product unit associated with the SKU.
+      packSize: 
+        type: string
+        description: The pack size of the SKU.
+      unit:
+        type: integer
+        description: The number of units contained in the SKU.
+      banForPracharat:
+        type: integer
+        description: A flag indicating whether the SKU is banned for Pracharat sales.
+      isVat:
+        type: boolean
+        description: A flag indicating whether the SKU is subject to VAT.
+      createBy:
+        type: string
+        description: The user who created the SKU.
+      creatDate:
+        type: string
+        format: date-time
+        description: The date and time the SKU was created.
+      isActive:
+        type: boolean
+        description: A flag indicating whether the SKU is active or not.
+      marchantID:
+        type: string
+        description: The unique identifier for the merchant associated with the SKU.
+      mapSKU:
+        type: string
+        description: The mapped SKU for the product.
+      isFixPrice:
+        type: boolean
+        description: A flag indicating whether the SKU has a fixed price or not.
+
+  Promotion:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The unique identifier for the promotion.
+      text:
+        type: string
+        description: The text or message associated with the promotion.
+    startDate:
+      startDate:
+        type: string
+        format: date-time
+        description: The start date and time for the promotion.
+      endDate:
+        type: string
+        format: date-time
+        description: The end date and time for the promotion.
+      condition:
+        type: object
+        properties:
+          discount:
+            type: integer
+            description: The discount percentage for the promotion.
+          appliedItemsId:
+            type: array
+            items:
+              type: string
+              description: An array of unique identifiers for items to which the promotion applies.
+  Tax:
+    type: object
+    properties:
+      rdNumber:
+        type: string
+        description: The reference number for the revenue department.
+      merchantTaxID:
+        type: string
+        description: The tax ID of the merchant.
+      merchantBranchName:
+        type: string
+        description: The name of the merchant's branch.
+      merchantBranchNo:
+        type: string
+        description: The number of the merchant's branch.
+      merchantAddress1:
+        type: string
+        description: The first line of the merchant's address.
+      merchantAddress2:
+        type: string
+        description: The second line of the merchant's address.
+      merchantSubDistrict:
+        type: string
+        description: The sub-district of the merchant's address.
+      merchantDistrict:
+        type: string
+        description: The district of the merchant's address.
+      merchantProvince:
+        type: string
+        description: The province of the merchant's address.
+      merchantZipCode:
+        type: string
+        description: The zip code of the merchant's address.
+      customerID:
+        type: string
+        description: The ID of the customer.
+      customerName:
+        type: string
+        description: The name of the customer.
+      customerTaxID:
+        type: string
+        description: The tax ID of the customer.
+      customerBranchNo:
+        type: string
+        description: The number of the customer's branch.
+      customerAddress1:
+        type: string
+        description: The first line of the customer's address.
+      customerAddress2:
+        type: string
+        description: The second line of the customer's address.
+      customerSubDistrict:
+        type: string
+        description: The sub-district of the customer's address.
+      customerDistrict:
+        type: string
+        description: The district of the customer's address.
+      customerProvince:
+        type: string
+        description: The province of the customer's address.
+      customerZipCode:
+        type: string
+        description: The zip code of the customer's address.
+  Payment:
+    type: object
+    properties:
+      paymentID:
+        type: string
+        description: Unique identifier for the payment
+      saleOrderID:
+        type: string
+        description: Unique identifier for the sale order associated with this payment
+      seq:
+        type: integer
+        description: Payment sequence number within the sale order
+      paymentMethod:
+        type: integer
+        description: Payment method used, represented by a numerical code
+      amount:
+        type: integer
+        description: Total amount of the payment, in the smallest unit of the currency (e.g. cents for USD)
+      amountRecieve:
+        type: integer
+        description: Amount received from the customer, in the smallest unit of the currency (e.g. cents for USD)
+      posSessionID:
+        type: string
+        description: Unique identifier for the POS session associated with this payment
+      posClientID:
+        type: string
+        description: Unique identifier for the POS client used to process this payment
+      createBy:
+        type: string
+        description: User ID of the person who created this payment record
+      createDate:
+        type: string
+        format: date-time
+        description: Date and time when this payment record was created
+      isActive:
+        type: boolean
+        description: Flag indicating whether this payment record is active
+      voidType:
+        type: integer
+        description: Code representing the reason for voiding this payment, if applicable
+      voidBy:
+        type: string
+        description: User ID of the person who voided this payment, if applicable
+      voidDate:
+        type: string
+        format: date-time
+        description: Date and time when this payment was voided, if applicable
+
+  SaleItem:
+    type: object
+    properties:
+      saleItemID:
+        type: string
+        description: Unique identifier for the sale item.
+      saleOrderID:
+        type: string
+        description: Unique identifier for the sale order that the item belongs to.
+      seq:
+        type: integer
+        description: Sequential number for the item within the sale order.
+      skuid:
+        type: string
+        description: SKU identifier for the product sold.
+      price:
+        type: number
+        format: float
+        description: Price of the product at the time of sale.
+      quantity:
+        type: number
+        format: float
+        description: Quantity of the product sold.
+      fullPrice:
+        type: number
+        format: float
+        description: Total price of the product sold, including any discounts applied.
+      posClientID:
+        type: string
+        description: Unique identifier for the point of sale client associated with the sale item.
+      branchID:
+        type: string
+        description: Unique identifier for the branch where the sale item was sold.
+      compCode:
+        type: string
+        description: Company code associated with the sale item.
+      promotionID:
+        type: integer
+        description: Unique identifier for the promotion applied to the sale item, if any.
+      createBy:
+        type: string
+        description: Username of the user who created the sale item.
+      createDate:
+        type: string
+        format: date-time
+        description: Date and time when the sale item was created.
+      isActive:
+        type: boolean
+        description: Indicates whether the sale item is active or not.
+      voidType:
+        type: integer
+        description: Type of void applied to the sale item, if any.
+      voidBy:
+        type: string
+        description: Username of the user who voided the sale item, if applicable.
+      voidDate:
+        type: string
+        format: date-time
+        description: Date and time when the sale item was voided, if applicable.
+      productName:
+        type: string
+        description: Name of the product sold.
+
+  SaleOrder:
+    type: object
+    properties:
+      saleOrderID:
+        type: string
+        description: Unique identifier for the sale order.
+      docNo:
+        type: string
+        description: Document number for the sale order.
+      frNo:
+        type: string
+        description: Fiscal receipt number for the sale order.
+      posSessionID:
+        type: string
+        description: Unique identifier for the point of sale session during which the sale order was created.
+      beforeVATSale:
+        type: number
+        format: float
+        description: Total sale amount before VAT.
+      totalDiscount:
+        type: number
+        format: float
+        description: Total discount amount applied to the sale order.
+      vatSale:
+        type: number
+        format: float
+        description: Total sale amount including VAT.
+      totalSale:
+        type: number
+        format: float
+        description: Total sale amount after applying discounts and including VAT.
+      posClientID:
+        type: string
+        description: Unique identifier for the point of sale client associated with the sale order.
+      branchID:
+        type: string
+        description: Unique identifier for the branch where the sale order was created.
+      merchantID:
+        type: string
+        description: Unique identifier for the merchant associated with the sale order.
+      memberID:
+        type: string
+        description: Unique identifier for the customer associated with the sale order.
+      status:
+        type: integer
+        description: Current status of the sale order.
+      createBy:
+        type: string
+        description: Username of the user who created the sale order.
+      createDate:
+        type: string
+        format: date-time
+        description: Date and time when the sale order was created.
+      isActive:
+        type: boolean
+        description: Indicates whether the sale order is active or not.
+      voidType:
+        type: integer
+        description: Type of void applied to the sale order, if any.
+      voidBy:
+        type: string
+        description: Username of the user who voided the sale order, if applicable.
+      voidDate:
+        type: string
+        format: date-time
+        description: Date and time when the sale order was voided, if applicable.
+      saleItems:
+        type: array
+        items:
+          $ref: '#/definitions/SaleItem'
+      payments:
+        type: array
+        items:
+          $ref: '#/definitions/Payment'
+
+  ProductGroup:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The unique identifier for the product group.
+      titleTh:
+        type: string
+        description: The title of the product group in Thai language.
+      titleEn:
+        type: string
+        description: The title of the product group in English language.
+      updateStatus:
+        type: boolean
+        description: A flag indicating whether the product group is up-to-date or not.
+      categories:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              description: The unique identifier for a category within the product group.
+
+  SaleOrderFullTax:
+    type: object
+    properties:
+      saleOrderID:
+        type: string
+        description: Unique identifier for the sale order.
+      docNo:
+        type: string
+        description: Document number for the sale order.
+      frNo:
+        type: string
+        description: Fiscal receipt number for the sale order.
+      posSessionID:
+        type: string
+        description: Unique identifier for the point of sale session during which the sale order was created.
+      beforeVATSale:
+        type: number
+        format: float
+        description: Total sale amount before VAT.
+      totalDiscount:
+        type: number
+        format: float
+        description: Total discount amount applied to the sale order.
+      vatSale:
+        type: number
+        format: float
+        description: Total sale amount including VAT.
+      totalSale:
+        type: number
+        format: float
+        description: Total sale amount after applying discounts and including VAT.
+      posClientID:
+        type: string
+        description: Unique identifier for the point of sale client associated with the sale order.
+      branchID:
+        type: string
+        description: Unique identifier for the branch where the sale order was created.
+      merchantID:
+        type: string
+        description: Unique identifier for the merchant associated with the sale order.
+      memberID:
+        type: string
+        description: Unique identifier for the customer associated with the sale order.
+      status:
+        type: integer
+        description: Current status of the sale order.
+      createBy:
+        type: string
+        description: Username of the user who created the sale order.
+      createDate:
+        type: string
+        format: date-time
+        description: Date and time when the sale order was created.
+      isActive:
+        type: boolean
+        description: Indicates whether the sale order is active or not.
+      voidType:
+        type: integer
+        description: Type of void applied to the sale order, if any.
+      voidBy:
+        type: string
+        description: Username of the user who voided the sale order, if applicable.
+      voidDate:
+        type: string
+        format: date-time
+        description: Date and time when the sale order was voided, if applicable.
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/SaleItem'
+      payments:
+        type: array
+        items:
+          $ref: '#/definitions/Payment'
+      FullTax:
+        type: array
+        items:
+          $ref: '#/definitions/Tax'
+
+  ProductCat:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The unique identifier for the product category.
+    title:
+      title:
+        type: string
+        description: The title of the product category.
+      updateStatus:
+        type: boolean
+        description: A flag indicating whether the product category is up-to-date or not.
+      itemsId:
+        type: array
+        items:
+          type: string
+          description: An array of unique identifiers for items within the product category.
+
+  ProductSubCat:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The unique identifier for the product subcategory.
+      title:
+        type: string
+        description: The title of the product subcategory.
+      items:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              description: The unique identifier for an item within the product subcategory.
+            title:
+              type: string
+              description: The title of the item within the product subcategory.
+
+  ErrorResult:
+    type: object
+    properties:
+      errorCode: 
+        type: string
+      errorDetail:
+        type: string
+      posClientID:
+        type: string
+      timeStamp:
+        type: string
+        format:
+          date-time
+
+  EmptySchema:
+    type: object
+    properties: {}
+  FailedResult:
+    type: object
+    properties:
+      code:
+        type: string
+        # nullable: true
+      message:
+        type: string
+        # nullable: true
+        
+  Zipcode:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          type: string
+          # nullable: true
+
+  Provinces:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          type: object
+          properties: 
+              provinceId:
+                type: string
+                # nullable: true
+              provinceName:
+                type: string
+                # nullable: true
+                
+  Province:
+    type: object
+    properties: 
+        id:
+          type: integer
+          # nullable: true
+        provinceName:
+          type: string
+          # nullable: true
+                
+  District:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          type: object
+          properties: 
+              id:
+                type: integer
+                # nullable: true
+              districtName:
+                type: string
+                # nullable: true
+                
+  Subdistrict:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          type: object
+          properties: 
+              id:
+                type: integer
+                # nullable: true
+              subDistrictName:
+                type: string
+                # nullable: true
+                
+  Address:
+    type: object
+    properties:
+      subDistrictItems:
+        type: array
+        items:
+          type: object
+          properties: 
+              provinceId:
+                type: string
+                # nullable: true
+              provinceName:
+                type: string
+                # nullable: true
+      districtId:
+        type: string
+      districtName:
+        type: string
+      provinceId:
+        type: string
+      provinceName:
+        type: string
+        
+  Banner:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          type: object
+          properties: 
+              bannerID:
+                type: string
+              startDate: 
+                type: string
+                format: date-time
+              endDate: 
+                type: string
+                format: date-time
+              bannerType: 
+                type: string
+              bannerImage: 
+                type: string
+              bodyUrl: 
+                type: string
+              title: 
+                type: string
+              description: 
+                type: string
+              isPopup: 
+                type: boolean
+
+  BannerForAdmin:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          type: object
+          properties: 
+              bannerID:
+                type: string
+              startDate: 
+                type: string
+                format: date-time
+              endDate: 
+                type: string
+                format: date-time
+              bannerType: 
+                type: string
+              bannerName:
+                type:
+                  string
+              bannerImage: 
+                type: string
+              urlName:
+                type: string
+              bodyUrl: 
+                type: string
+              title: 
+                type: string
+              description: 
+                type: string
+              isPopup: 
+                type: boolean
+
+  BannerRe:
+    type: object
+    properties:
+              bannerID:
+                type: string
+              startDate: 
+                type: string
+                format: date-time
+              endDate: 
+                type: string
+                format: date-time
+              bannerType: 
+                type: string
+              bannerImage: 
+                type: string
+              bodyUrl: 
+                type: string
+              title: 
+                type: string
+              description: 
+                type: string
+              isPopup: 
+                type: boolean
+              stringBannerImage: 
+                type: string
+              bannerImageContentType: 
+                type: string
+              stringBodyUrl: 
+                type: string
+              bodyUrlContentType: 
+                type: string
+                
+  Branch:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          type: object
+          properties:
+            branchID:
+              type: string
+            merchantID:
+              type: string
+            branchNo:
+              type: string
+            branchName:
+              type: string
+            branchAddress:
+              type: string
+            branchEmail:
+              type: string
+            accountName:
+              type: string
+            accountCode:
+              type: string
+            isActive:
+              type: boolean
+              
+  BranchDetails:
+    type: object
+    properties:
+      branchNo:
+        type: string
+      branchName:
+        type: string
+      branchEmail:
+        type: string
+      accountName:
+        type: string
+      accountCode:
+        type: string
+      branchAddress1:
+        type: string
+      branchAddress2:
+        type: string
+      branchSubDistrict:
+        type: string
+      branchDistrict:
+        type: string
+      branchProvince:
+        type: string
+      branchZipcode:
+        type: string
+      isinventory:
+        type: integer
+        format: int32
+      isAlertInventory:
+        type: integer
+        format: int32
+        
+  Brand:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          type: object
+          properties:
+            brandID:
+              type: integer
+            tH_Brand:
+              type: string
+            eN_Brand:
+              type: string
+              
+  Coupon:
+    type: object
+    properties:
+      couponCode:
+        type: string
+      couponType:
+        type: integer
+      seq:
+        type: integer
+      useDate:
+        type: string
+        format: date-time
+      discount:
+        type: integer
+      skuid:
+        type: string
+        
+  Customer:
+    type: object
+    properties:
+      businessType:
+        type: integer
+      customerID:
+        type: string
+      customerName:
+        type: string
+      branchNumber:
+        type: string
+      telphoneNumber:
+        type: string
+      address1:
+        type: string
+      address2:
+        type: string
+      subDistrict:
+        type: string
+      district:
+        type: string
+      province:
+        type: string
+      zipcode:
+        type: string
+        
+  CustomerRequest:
+    type: object
+    properties:
+      customerId:
+        type: string
+      businessTypeId:
+        type: integer
+      customerName:
+        type: string
+      taxId:
+        type: string
+      branchNo:
+        type: string
+      mobile:
+        type: string
+      tel:
+        type: string
+      fax:
+        type: string
+      email:
+        type: string
+      merchantID:
+        type: string
+      branchID:
+        type: string
+      createBy:
+        type: string
+      createDate:
+        type: string
+        format: date-time
+      updateBy:
+        type: string
+      updateDate:
+        type: string
+        format: date-time
+      address1:
+        type: string
+      address2:
+        type: string
+      subDistrict:
+        type: string
+      district:
+        type: string
+      province:
+        type: string
+      zipcode:
+        type: string
+        
+  Favorite:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          type: object
+          properties:
+            skuId:
+              type: string
+            order:
+              type: integer
+              
+  FullTax:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          type: object
+          properties:
+            fullTaxId:
+              type: string
+            receiptNo:
+              type: string
+            fullReceiptNo:
+              type: string
+            customerName:
+              type: string
+            customerTaxID:
+              type: string
+            branchNumber:
+              type: string
+            customerAddress:
+              type: string
+            documentStatus:
+              type: integer
+            createBy:
+              type: string
+            createDate:
+              type: string
+              format: date-time
+              
+  FullTaxRequest:
+    type: object
+    properties:
+      fullTaxId:
+        type: string
+      saleOrderID:
+        type: string
+      receiptNo:
+        type: string
+      fullReceiptNo:
+        type: string
+      rdNumber:
+        type: string
+      branchName:
+        type: string
+      branchNumber:
+        type: string
+      customerID:
+        type: string
+      customerName:
+        type: string
+      customerTaxID:
+        type: string
+      customerBranchNo:
+        type: string
+      documentStatus:
+        type: integer
+      createBy:
+        type: string
+      createDate:
+        type: string
+        format: date-time
+      fullTaxDetail:
+        type: object
+        properties:
+          customerAddress1:
+            type: string
+          customerAddress2:
+            type: string
+          customerSubDistrict:
+            type: string
+          customerDistrict:
+            type: string
+          customerProvince:
+            type: string
+          customerZipcode:
+            type: string
+          reason:
+            type: string
+          createBy:
+            type: string
+          createDate:
+            type: string
+            format: date-time
+
+  InventoryConfig:
+      type: array
+      items:
+        type: object
+        properties:
+          isinventory:
+            type: integer
+          isAlertInventory:
+            type: integer
+            
+  Notification:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              notificationID:
+                type: string
+                example: "string"
+              sender:
+                type: string
+                example: "string"
+              headerIMG:
+                type: string
+                example: "string"
+              title:
+                type: string
+                example: "string"
+              description:
+                type: string
+                example: "string"
+              createDate:
+                type: string
+                format: date-time
+
+  NotificationForAdmin:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              notificationID:
+                type: string
+                example: "string"
+              sender:
+                type: string
+                example: "string"
+              image:
+                type: string
+                example: "string"
+              headerIMG:
+                type: string
+                example: "string"
+              title:
+                type: string
+                example: "string"
+              description:
+                type: string
+                example: "string"
+              createDate:
+                type: string
+                format: date-time
+                   
+  NotificationRequest:
+      type: object
+      properties:
+        notificationID:
+          type: string
+        sender:
+          type: string
+        headerIMG:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        stringHeaderIMG:
+          type: string
+        headerIMGContentType:
+          type: string
+  
+  PaymentConfig:
+      type: object
+      properties:
+        isCash:
+          type: boolean
+        isQRCode:
+          type: boolean
+        promtpayAccountName:
+          type: string
+        promtpayNo:
+          type: string
+        isPaoTang:
+          type: boolean
+        isTongFah:
+          type: boolean
+        isCoupon:
+          type: boolean
+        printerType:
+          type: integer
+        printerConfig:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: integer
+              title:
+                type: string
+                
+  PaymentConfigRequest:
+      type: object
+      properties:
+        isCash:
+          type: boolean
+        isQRCode:
+          type: boolean
+        promtpayAccountName:
+          type: string
+        promtpayNo:
+          type: string
+        isPaoTang:
+          type: boolean
+        isTongFah:
+          type: boolean
+        isCoupon:
+          type: boolean
+        printerType:
+          type: integer
+          
+  PaymentMethod:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              paymentMethodID:
+                type: integer
+              paymentName:
+                type: string
+
+
