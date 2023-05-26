@@ -8,7 +8,7 @@ const TableNamePosclient = "posclient"
 
 // Posclient mapped from table <posclient>
 type Posclient struct {
-	Posclientid       string `gorm:"column:posclientid;default:uuid_generate_v4()" json:"posclientid"`
+	Posclientid       string `gorm:"column:posclientid" json:"posclientid"`
 	Branchid          string `gorm:"column:branchid" json:"branchid"`
 	Merchantid        string `gorm:"column:merchantid" json:"merchantid"`
 	Rdnumber          string `gorm:"column:rdnumber" json:"rdnumber"`

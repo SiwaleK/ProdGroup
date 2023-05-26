@@ -16,10 +16,12 @@ func main() {
 
 	r := gin.Default()
 
-	//loadPrefix จาก env
-	ADDRESSMASTERDATA_PREFIX := os.Getenv("ADDRESSMASTERDATA_PREFIX")
-	//สร้าง router
-	router.AddressMasterDataRoutes(r.Group(ADDRESSMASTERDATA_PREFIX))
+	ROUTER_CONFIX := os.Getenv("ROUTER_CONFIX")
+	router.PaymentConfig(r.Group(ROUTER_CONFIX))
+	router.ReceiptHistory(r.Group(ROUTER_CONFIX))
+	router.PosConfig(r.Group(ROUTER_CONFIX))
+	router.Promotion(r.Group(ROUTER_CONFIX))
+	router.ProductGroup(r.Group(ROUTER_CONFIX))
 
 	r.Run(":8000")
 }

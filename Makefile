@@ -3,7 +3,7 @@ include .env
 DB_CONNECTION_STRING := postgresql://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=$(SSL_MODE)
 
 migrateup:
-	migrate -path ./db/migration -database "$(DB_CONNECTION_STRING)" up
+
 
 migratedown:
 	migrate -path ./db/migration -database "$(DB_CONNECTION_STRING)" down
@@ -31,5 +31,5 @@ test:
 
 gen:
 	gentool -db "postgres" -dsn "$(DB_CONNECTION_STRING)" -outPath "./model/db" -modelPkgName "db" -onlyModel
-
+	
 .PHONY: migrateup migratedown sqlc test gen

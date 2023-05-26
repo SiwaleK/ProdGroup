@@ -8,7 +8,7 @@ const TableNameMerchant = "merchant"
 
 // Merchant mapped from table <merchant>
 type Merchant struct {
-	Merchantid      string `gorm:"column:merchantid;default:uuid_generate_v4()" json:"merchantid"`
+	Merchantid      string `gorm:"column:merchantid" json:"merchantid"`
 	Merchantname    string `gorm:"column:merchantname" json:"merchantname"`
 	Merchantaddress string `gorm:"column:merchantaddress" json:"merchantaddress"`
 	Merchanttel     string `gorm:"column:merchanttel" json:"merchanttel"`

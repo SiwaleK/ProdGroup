@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"example.com/go-crud-api/db/database"
-	db "example.com/go-crud-api/model/db"
+	db "example.com/go-crud-api/db/db"
 )
 
 // สร้าง signature ให้ interface ของ repository ว่าจะมี method อะไร รับค่าอะไร return อะไร

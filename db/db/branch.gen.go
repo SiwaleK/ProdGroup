@@ -8,7 +8,7 @@ const TableNameBranch = "branch"
 
 // Branch mapped from table <branch>
 type Branch struct {
-	Branchid          string `gorm:"column:branchid;default:uuid_generate_v4()" json:"branchid"`
+	Branchid          string `gorm:"column:branchid" json:"branchid"`
 	Merchantid        string `gorm:"column:merchantid" json:"merchantid"`
 	Branchno          string `gorm:"column:branchno" json:"branchno"`
 	Branchname        string `gorm:"column:branchname" json:"branchname"`

@@ -12,7 +12,7 @@ const TableNameUseraccount = "useraccount"
 
 // Useraccount mapped from table <useraccount>
 type Useraccount struct {
-	Userid      string    `gorm:"column:userid;default:uuid_generate_v4()" json:"userid"`
+	Userid      string    `gorm:"column:userid" json:"userid"`
 	Login       string    `gorm:"column:login" json:"login"`
 	Password    string    `gorm:"column:password" json:"password"`
 	Lastlogin   time.Time `gorm:"column:lastlogin" json:"lastlogin"`

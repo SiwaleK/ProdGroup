@@ -38,7 +38,7 @@ func DatabaseConnection() {
 }
 
 func loadEnv() {
-	projectName := regexp.MustCompile(`^(.*` + "sku" + `)`)
+	projectName := regexp.MustCompile(`^(.*` + "MPOS_backend" + `)`)
 	currentWorkDirectory, _ := os.Getwd()
 	rootPath := projectName.Find([]byte(currentWorkDirectory))
 

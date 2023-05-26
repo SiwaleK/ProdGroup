@@ -8,9 +8,9 @@ const TableNameProdgroup = "prodgroup"
 
 // Prodgroup mapped from table <prodgroup>
 type Prodgroup struct {
-	Prodsubcatid int32  `gorm:"column:prodsubcatid;not null" json:"prodsubcatid"`
-	ThName       string `gorm:"column:th_name" json:"th_name"`
-	EnName       string `gorm:"column:en_name" json:"en_name"`
+	Prodgroupid int32  `gorm:"column:prodgroupid;primaryKey" json:"prodgroupid"`
+	ThName      string `gorm:"column:th_name" json:"th_name"`
+	EnName      string `gorm:"column:en_name" json:"en_name"`
 }
 
 // TableName Prodgroup's table name
